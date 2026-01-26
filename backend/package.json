@@ -21,6 +21,14 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/georgekobaidze/metal-birds-watch"
+  },
+  "bugs": {
+    "url": "https://github.com/georgekobaidze/metal-birds-watch/issues"
+  },
+  "homepage": "https://github.com/georgekobaidze/metal-birds-watch#readme",
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
