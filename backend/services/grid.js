@@ -16,6 +16,7 @@ function getGridKey(lat, lon) {
 
 /**
  * Normalize longitude to the range [-180, 180]
+ * @private - Internal helper function for getBoundingBox
  * @param {number} lon - Longitude value
  * @returns {number} Normalized longitude
  */
