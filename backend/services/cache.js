@@ -28,7 +28,8 @@ function get(gridKey) {
   
   // Cache is fresh (LRU already filtered expired entries)
   return {
-    planes: cached.planes,
+    // Return a shallow copy to prevent callers from mutating cached data
+    planes: Array.isArray(cached.planes) ? cached.planes.slice() : cached.planes,
     cacheAge,
     nextUpdateIn: Math.max(0, CACHE_TTL_SECONDS - cacheAge)
   };
