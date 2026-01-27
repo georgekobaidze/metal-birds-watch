@@ -134,6 +134,7 @@ async function fetchPlanes(lat, lon, radiusKm) {
  * @returns {Array} Array of plane objects
  */
 function parseStates(states) {
+  const timestamp = Date.now(); // Fetch timestamp once for all planes
   return states
     .filter(state => {
       // Filter out planes with missing position data
@@ -151,7 +152,7 @@ function parseStates(states) {
         velocity: state[9],                          // Ground speed in m/s (can be null)
         heading: state[10],                          // True track in degrees (can be null)
         verticalRate: state[11],                     // Vertical rate in m/s (can be null)
-        timestamp: Date.now()                        // When this data was fetched
+        timestamp                                    // When this data was fetched
       };
     });
 }
