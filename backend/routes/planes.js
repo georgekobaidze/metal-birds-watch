@@ -4,7 +4,7 @@ const cache = require('../services/cache');
 const opensky = require('../services/opensky');
 const { validateCoordinates } = require('../middleware/validate');
 const { planesRateLimiter } = require('../middleware/rateLimit');
-const { FETCH_RADIUS_KM } = require('../config');
+const { FETCH_RADIUS_KM, CACHE_TTL_SECONDS } = require('../config');
 
 // Track in-progress fetches to prevent duplicate API calls (thundering herd)
 const fetchesInProgress = new Map();
@@ -15,7 +15,7 @@ const fetchesInProgress = new Map();
  */
 router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) => {
   try {
-    const { lat, lon, gridKey } = req.validatedLocation;
+    const { latitude, longitude, gridKey } = req.validatedLocation;
     
     // Check cache first
     let cachedData = cache.get(gridKey);
@@ -49,7 +49,7 @@ router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) 
     }
     
     // Start a new fetch
-    const fetchPromise = opensky.fetchPlanes(lat, lon, FETCH_RADIUS_KM);
+    const fetchPromise = opensky.fetchPlanes(latitude, longitude, FETCH_RADIUS_KM);
     fetchesInProgress.set(gridKey, fetchPromise);
     
     try {
@@ -71,7 +71,7 @@ router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) 
       return res.json({
         planes,
         cacheAge: 0,
-        nextUpdateIn: 30
+        nextUpdateIn: CACHE_TTL_SECONDS
       });
       
     } finally {

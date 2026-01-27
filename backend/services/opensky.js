@@ -43,7 +43,6 @@ async function getAccessToken() {
     return accessToken;
     
   } catch (error) {
-    console.error('Error obtaining OpenSky access token:', error.message);
     throw error;
   }
 }
@@ -57,7 +56,12 @@ async function getValidToken() {
   
   // If no token, or token expires soon, fetch new one
   if (!accessToken || !tokenExpiry || now >= (tokenExpiry - TOKEN_REFRESH_BUFFER)) {
-    return await getAccessToken();
+    try {
+      return await getAccessToken();
+    } catch (error) {
+      console.error('Failed to get OAuth token:', error.message);
+      throw new Error('Authentication failed - check OpenSky credentials');
+    }
   }
   
   return accessToken;

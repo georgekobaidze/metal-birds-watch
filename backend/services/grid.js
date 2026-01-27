@@ -22,15 +22,18 @@ function getGridKey(lat, lon) {
  * @returns {object} Bounding box { minLat, maxLat, minLon, maxLon }
  */
 function getBoundingBox(lat, lon, radiusKm = FETCH_RADIUS_KM) {
+  // Clamp latitude to avoid pole issues (cos(90°) = 0 causes division issues)
+  const clampedLat = Math.max(-85, Math.min(85, lat));
+  
   // Calculate latitude offset (constant everywhere)
   const latOffset = radiusKm / KM_PER_DEGREE_LAT;
   
   // Calculate longitude offset (varies by latitude)
-  const lonOffset = radiusKm / (KM_PER_DEGREE_LAT * Math.cos(lat * Math.PI / 180));
+  const lonOffset = radiusKm / (KM_PER_DEGREE_LAT * Math.cos(clampedLat * Math.PI / 180));
   
   return {
-    minLat: lat - latOffset,
-    maxLat: lat + latOffset,
+    minLat: Math.max(-90, clampedLat - latOffset),
+    maxLat: Math.min(90, clampedLat + latOffset),
     minLon: lon - lonOffset,
     maxLon: lon + lonOffset
   };

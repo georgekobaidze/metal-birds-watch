@@ -1,7 +1,15 @@
+const { LRUCache } = require('lru-cache');
 const { CACHE_TTL_SECONDS } = require('../config');
 
-// In-memory cache: Map of grid keys to cached data
-const cache = new Map();
+// LRU cache with automatic expiration and memory bounds
+// Max 500 grid cells = ~25MB max memory (50KB per grid cell estimate)
+const cache = new LRUCache({
+  max: 500,  // Maximum 500 grid cells
+  ttl: CACHE_TTL_SECONDS * 1000,  // TTL in milliseconds
+  ttlAutopurge: true,  // Automatically remove expired entries
+  updateAgeOnGet: false,  // Don't reset TTL when accessed (read-through)
+  updateAgeOnHas: false  // Don't reset TTL on has() check
+});
 
 /**
  * Get cached data for a grid key
@@ -15,20 +23,14 @@ function get(gridKey) {
     return null;
   }
   
+  // Calculate cache age from stored timestamp
   const cacheAge = Math.floor((Date.now() - cached.timestamp) / 1000);
   
-  // Check if cache is expired
-  if (cacheAge >= CACHE_TTL_SECONDS) {
-    // Cache expired, remove it
-    cache.delete(gridKey);
-    return null;
-  }
-  
-  // Cache is fresh
+  // Cache is fresh (LRU already filtered expired entries)
   return {
     planes: cached.planes,
     cacheAge,
-    nextUpdateIn: CACHE_TTL_SECONDS - cacheAge
+    nextUpdateIn: Math.max(0, CACHE_TTL_SECONDS - cacheAge)
   };
 }
 
@@ -58,22 +60,27 @@ function clear() {
 function getStats() {
   const now = Date.now();
   let freshCount = 0;
-  let staleCount = 0;
+  let expiringSoonCount = 0;  // < 5 seconds remaining
   
   for (const [key, value] of cache.entries()) {
     const age = Math.floor((now - value.timestamp) / 1000);
-    if (age < CACHE_TTL_SECONDS) {
+    const remaining = CACHE_TTL_SECONDS - age;
+    
+    if (remaining > 0) {
       freshCount++;
-    } else {
-      staleCount++;
+      if (remaining < 5) {
+        expiringSoonCount++;
+      }
     }
   }
   
   return {
     totalEntries: cache.size,
+    maxEntries: cache.max,
     freshEntries: freshCount,
-    staleEntries: staleCount,
-    ttlSeconds: CACHE_TTL_SECONDS
+    expiringSoonEntries: expiringSoonCount,
+    ttlSeconds: CACHE_TTL_SECONDS,
+    calculatedSize: cache.calculatedSize || 0
   };
 }
 
@@ -87,14 +94,13 @@ function getSnapshot() {
   
   for (const [key, value] of cache.entries()) {
     const age = Math.floor((now - value.timestamp) / 1000);
-    const isExpired = age >= CACHE_TTL_SECONDS;
+    const remaining = Math.max(0, CACHE_TTL_SECONDS - age);
     
     entries.push({
       gridKey: key,
       planeCount: value.planes.length,
       ageSeconds: age,
-      remainingSeconds: isExpired ? 0 : CACHE_TTL_SECONDS - age,
-      isExpired,
+      remainingSeconds: remaining,
       timestamp: new Date(value.timestamp).toISOString()
     });
   }

@@ -14,9 +14,6 @@ module.exports = {
   RATE_LIMIT_MAX_REQUESTS: 5,    // Max 5 requests per window
   MAX_LOCATIONS_PER_IP: 3,       // Max 3 different grid cells per IP
 
-  // Global API Protection
-  MAX_API_CALLS_PER_MINUTE: 20,  // Total OpenSky calls per minute
-
   // OpenSky API
   OPENSKY_BASE_URL: 'https://opensky-network.org/api',
   OPENSKY_AUTH_URL: 'https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token',
