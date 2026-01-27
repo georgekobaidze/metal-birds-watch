@@ -28,30 +28,25 @@ async function getAccessToken() {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: params
-    });
+  const response = await fetch(OPENSKY_AUTH_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: params
+  });
 
-    if (!response.ok) {
-      throw new Error(`OAuth token request failed: ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    // Validate token response
-    if (!data || typeof data.access_token !== 'string' || data.access_token.length === 0) {
-      throw new Error('OAuth token response missing valid access_token');
-    }
-    if (typeof data.expires_in !== 'number' || !Number.isFinite(data.expires_in) || data.expires_in <= 0) {
-      throw new Error('OAuth token response missing valid expires_in');
-    }
-
-    // Store token and calculate expiry time
-    accessToken = data.access_token;
-    tokenExpiry = Date.now() + (data.expires_in * 1000);
-    return accessToken;
-    
-  } catch (error) {
-    throw error;
+  if (!response.ok) {
+    throw new Error(`OAuth token request failed: ${response.status} ${response.statusText}`);
   }
+
+  const data = await response.json();
+  
+  // Store token and calculate expiry time
+  accessToken = data.access_token;
+  tokenExpiry = Date.now() + (data.expires_in * 1000);
+  
+  return accessToken;
 }
 
 /**
