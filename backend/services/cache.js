@@ -63,7 +63,7 @@ function getStats() {
   let freshCount = 0;
   let expiringSoonCount = 0;  // < 5 seconds remaining
   
-  for (const [key, value] of cache.entries()) {
+  for (const [, value] of cache.entries()) {
     const age = Math.floor((now - value.timestamp) / 1000);
     const remaining = CACHE_TTL_SECONDS - age;
     
