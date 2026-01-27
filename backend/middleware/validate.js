@@ -52,7 +52,7 @@ function validateCoordinates(req, res, next) {
     // Check if IP has reached location limit
     if (locations.size >= MAX_LOCATIONS_PER_IP) {
       return res.status(429).json({ 
-        error: 'Too many different locations requested. Maximum 3 locations per IP address.' 
+        error: `Too many different locations requested. Maximum ${MAX_LOCATIONS_PER_IP} locations per IP address.` 
       });
     }
     
