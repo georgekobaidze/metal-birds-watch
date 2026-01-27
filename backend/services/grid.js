@@ -15,6 +15,23 @@ function getGridKey(lat, lon) {
 }
 
 /**
+ * Normalize longitude to the range [-180, 180]
+ * @private - Internal helper function for getBoundingBox
+ * @param {number} lon - Longitude value
+ * @returns {number} Normalized longitude
+ */
+function normalizeLongitude(lon) {
+  // Normalize longitude to [-180, 180] range
+  let normalized = lon % 360;
+  if (normalized > 180) {
+    normalized -= 360;
+  } else if (normalized < -180) {
+    normalized += 360;
+  }
+  return normalized;
+}
+
+/**
  * Calculate bounding box for OpenSky API query
  * @param {number} lat - Center latitude
  * @param {number} lon - Center longitude
@@ -34,8 +51,8 @@ function getBoundingBox(lat, lon, radiusKm = FETCH_RADIUS_KM) {
   return {
     minLat: Math.max(-90, clampedLat - latOffset),
     maxLat: Math.min(90, clampedLat + latOffset),
-    minLon: lon - lonOffset,
-    maxLon: lon + lonOffset
+    minLon: normalizeLongitude(lon - lonOffset),
+    maxLon: normalizeLongitude(lon + lonOffset)
   };
 }
 
