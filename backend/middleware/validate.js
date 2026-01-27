@@ -35,7 +35,7 @@ function validateCoordinates(req, res, next) {
   }
   
   // Get client IP
-  const ip = req.ip || req.connection.remoteAddress;
+  const ip = req.ip;
   
   // Calculate grid key for this location
   const gridKey = getGridKey(latitude, longitude);
