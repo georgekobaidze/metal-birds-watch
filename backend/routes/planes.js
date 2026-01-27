@@ -33,7 +33,7 @@ router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) 
     if (fetchesInProgress.has(gridKey)) {
       // Wait for the existing fetch to complete
       try {
-        const planes = await fetchesInProgress.get(gridKey);
+        await fetchesInProgress.get(gridKey);
         
         // Now it should be in cache
         cachedData = cache.get(gridKey);
