@@ -66,8 +66,7 @@ async function getValidToken() {
     // Start a new token refresh and store the promise
     tokenRefreshPromise = (async () => {
       try {
-        const token = await getAccessToken();
-        return token;
+        return await getAccessToken();
       } catch (error) {
         console.error('Failed to get OAuth token:', error.message);
         throw new Error('Authentication failed - check OpenSky credentials');
