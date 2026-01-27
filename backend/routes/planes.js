@@ -43,8 +43,11 @@ router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) 
           return res.json(cachedData);
         }
       } catch (error) {
-        // If the other fetch failed, we'll try ourselves below
+        // If the other fetch failed, return an error instead of retrying
         console.error('Waiting for fetch failed:', error.message);
+        return res.status(503).json({
+          error: 'Unable to fetch flight data. Please try again later.'
+        });
       }
     }
     
