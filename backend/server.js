@@ -32,6 +32,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Routes
+const planesRoute = require('./routes/planes');
+app.use('/api', planesRoute);
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({

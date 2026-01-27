@@ -3,7 +3,7 @@ module.exports = {
   PORT: process.env.PORT || 3000,
 
   // Cache Configuration
-  CACHE_TTL_SECONDS: 30,
+  CACHE_TTL_SECONDS: 25,  // Reduced for faster notifications (25-30s with jitter)
 
   // Grid Configuration
   GRID_SIZE_DEGREES: 0.2,        // ~22km per grid cell
