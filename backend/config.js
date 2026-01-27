@@ -19,8 +19,9 @@ module.exports = {
 
   // OpenSky API
   OPENSKY_BASE_URL: 'https://opensky-network.org/api',
-  OPENSKY_USERNAME: process.env.OPENSKY_USERNAME,
-  OPENSKY_PASSWORD: process.env.OPENSKY_PASSWORD,
+  OPENSKY_AUTH_URL: 'https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token',
+  OPENSKY_CLIENT_ID: process.env.OPENSKY_CLIENT_ID,
+  OPENSKY_CLIENT_SECRET: process.env.OPENSKY_CLIENT_SECRET,
 
   // Earth Constants (for calculations)
   EARTH_RADIUS_KM: 6371,
