@@ -4,6 +4,7 @@ const { getBoundingBox } = require('./grid');
 // Token management
 let accessToken = null;
 let tokenExpiry = null;
+let tokenRefreshPromise = null; // Promise-based lock for token refresh
 const TOKEN_REFRESH_BUFFER = 5 * 60 * 1000; // Refresh 5 minutes before expiry
 
 /**
@@ -28,29 +29,28 @@ async function getAccessToken() {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: params
-  const response = await fetch(OPENSKY_AUTH_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: params
-  });
+    });
 
-  if (!response.ok) {
-    throw new Error(`OAuth token request failed: ${response.status} ${response.statusText}`);
+    if (!response.ok) {
+      throw new Error(`OAuth token request failed: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    
+    // Store token and calculate expiry time
+    accessToken = data.access_token;
+    tokenExpiry = Date.now() + (data.expires_in * 1000);
+    
+    return accessToken;
+    
+  } catch (error) {
+    throw error;
   }
-
-  const data = await response.json();
-  
-  // Store token and calculate expiry time
-  accessToken = data.access_token;
-  tokenExpiry = Date.now() + (data.expires_in * 1000);
-  
-  return accessToken;
 }
 
 /**
  * Get valid access token (fetch new one if expired or about to expire)
+ * Uses promise-based locking to prevent concurrent token refresh requests
  * @returns {Promise<string>} Valid access token
  */
 async function getValidToken() {
@@ -58,12 +58,26 @@ async function getValidToken() {
   
   // If no token, or token expires soon, fetch new one
   if (!accessToken || !tokenExpiry || now >= (tokenExpiry - TOKEN_REFRESH_BUFFER)) {
-    try {
-      return await getAccessToken();
-    } catch (error) {
-      console.error('Failed to get OAuth token:', error.message);
-      throw new Error('Authentication failed - check OpenSky credentials');
+    // If a token refresh is already in progress, wait for it
+    if (tokenRefreshPromise) {
+      return tokenRefreshPromise;
     }
+    
+    // Start a new token refresh and store the promise
+    tokenRefreshPromise = (async () => {
+      try {
+        const token = await getAccessToken();
+        return token;
+      } catch (error) {
+        console.error('Failed to get OAuth token:', error.message);
+        throw new Error('Authentication failed - check OpenSky credentials');
+      } finally {
+        // Clear the promise lock after completion (success or failure)
+        tokenRefreshPromise = null;
+      }
+    })();
+    
+    return tokenRefreshPromise;
   }
   
   return accessToken;
