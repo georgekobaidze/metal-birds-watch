@@ -5,6 +5,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy (for Railway/Render deployments to get real client IPs)
+app.set('trust proxy', true);
+
 // CORS configuration
 const allowedOrigins = (process.env.CORS_ORIGINS || '')
     .split(',')
