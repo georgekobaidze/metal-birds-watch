@@ -1,0 +1,91 @@
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Trust proxy configuration
+// Production (Railway/Render): Trust exactly 1 hop (their load balancer)
+// Development: Don't trust any proxy (direct connection)
+const isProduction = process.env.NODE_ENV === 'production';
+app.set('trust proxy', isProduction ? 1 : false);
+
+// CORS configuration
+const allowedOrigins = (process.env.CORS_ORIGINS || '')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(origin => origin.length > 0);
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin) {
+            // Allow non-browser or same-origin requests with no Origin header
+            return callback(null, true);
+        }
+        if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: false
+};
+
+// Middleware
+app.use(cors(corsOptions));
+app.use(express.json());
+
+// IP request logging (temporary - for testing)
+app.use((req, res, next) => {
+  const ip = req.ip || req.socket.remoteAddress;
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] ${req.method} ${req.path} - IP: ${ip}`);
+  next();
+});
+
+// Routes
+const planesRoute = require('./routes/planes');
+const adminRoute = require('./routes/admin');
+
+app.use('/api', planesRoute);
+app.use('/api/admin', adminRoute);
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Error handling middleware (must be last!)
+app.use((err, req, res, next) => {
+    // Log full error details internally
+    console.error('Unhandled error:', {
+        message: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method
+    });
+    
+    // Return sanitized error to client (don't expose internal details)
+    res.status(500).json({
+        error: 'Internal server error. Please try again later.'
+    });
+});
+
+// Start server with error handling
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+})
+.on('error', (error) => {
+    // Handle server startup errors
+    if (error.code === 'EADDRINUSE') {
+        console.error(`Error: Port ${PORT} is already in use`);
+    } else if (error.code === 'EACCES') {
+        console.error(`Error: Permission denied to bind to port ${PORT}`);
+    } else {
+        console.error('Server error:', error);
+    }
+    process.exit(1);
+});
