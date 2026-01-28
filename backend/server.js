@@ -75,7 +75,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server with error handling
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 })
 .on('error', (error) => {
