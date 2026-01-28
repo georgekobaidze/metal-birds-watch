@@ -53,6 +53,7 @@ function authenticateAdminWithRateLimit(req, res, next) {
   if (now - ipData.firstAttempt > WINDOW_MS) {
     ipData.count = 0;
     ipData.firstAttempt = now;
+    failedAttempts.set(ip, ipData);  // Persist the reset
   }
   
   // Check if IP is rate limited (too many failed attempts)
@@ -66,6 +67,7 @@ function authenticateAdminWithRateLimit(req, res, next) {
   if (!apiKey || apiKey !== expectedKey) {
     // Wrong key - increment failed attempts counter
     ipData.count++;
+    failedAttempts.set(ip, ipData);  // Persist the increment
     
     return res.status(401).json({
       error: 'Unauthorized - Invalid or missing API key'
@@ -74,6 +76,7 @@ function authenticateAdminWithRateLimit(req, res, next) {
   
   // Correct key - reset failed attempts and proceed
   ipData.count = 0;
+  failedAttempts.set(ip, ipData);  // Persist the reset
   next();
 }
 
