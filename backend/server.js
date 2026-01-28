@@ -35,6 +35,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// IP request logging (temporary - for testing)
+app.use((req, res, next) => {
+  const ip = req.ip || req.socket.remoteAddress;
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] ${req.method} ${req.path} - IP: ${ip}`);
+  next();
+});
+
 // Routes
 const planesRoute = require('./routes/planes');
 const adminRoute = require('./routes/admin');
