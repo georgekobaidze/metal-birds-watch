@@ -27,7 +27,7 @@ setInterval(() => {
  * Only counts failed authentication attempts
  */
 function authenticateAdminWithRateLimit(req, res, next) {
-  const ip = req.ip || req.connection.remoteAddress;
+  const ip = req.ip;
   const apiKey = req.headers['x-api-key'];
   const expectedKey = process.env.ADMIN_API_KEY;
   
