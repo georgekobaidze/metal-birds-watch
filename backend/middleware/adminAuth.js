@@ -11,7 +11,7 @@
 const failedAttempts = new Map();
 
 // Cleanup old entries every 5 minutes
-setInterval(() => {
+const cleanupInterval = setInterval(() => {
   const now = Date.now();
   const CLEANUP_AGE = 5 * 60 * 1000; // 5 minutes
   
@@ -79,6 +79,17 @@ function authenticateAdminWithRateLimit(req, res, next) {
   next();
 }
 
+/**
+ * Cleanup function to stop the interval timer
+ * Should be called when shutting down the server
+ */
+function cleanup() {
+  if (cleanupInterval) {
+    clearInterval(cleanupInterval);
+  }
+}
+
 module.exports = {
-  authenticateAdminWithRateLimit
+  authenticateAdminWithRateLimit,
+  cleanup
 };
