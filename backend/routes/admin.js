@@ -26,27 +26,8 @@ function authenticateAdmin(req, res, next) {
 }
 
 /**
- * GET /api/admin/cache/stats
- * Get cache statistics (lightweight)
- */
-router.get('/cache/stats', adminRateLimiter, authenticateAdmin, (req, res) => {
-  try {
-    const stats = cache.getStats();
-    res.json({
-      success: true,
-      stats
-    });
-  } catch (error) {
-    console.error('Error fetching cache stats:', error);
-    res.status(500).json({
-      error: 'Failed to fetch cache statistics'
-    });
-  }
-});
-
-/**
  * GET /api/admin/cache/snapshot
- * Get full cache snapshot with all entries (heavier)
+ * Get full cache snapshot with stats and all entries
  */
 router.get('/cache/snapshot', adminRateLimiter, authenticateAdmin, (req, res) => {
   try {
