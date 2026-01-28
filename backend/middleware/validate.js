@@ -14,11 +14,16 @@ const ipLocations = new LRUCache({
  * Validate coordinates and enforce location limits per IP
  */
 function validateCoordinates(req, res, next) {
+  // Validate request body exists
+  if (!req.body || typeof req.body !== 'object') {
+    return res.status(400).json({ error: 'Request body required' });
+  }
+  
   const { latitude, longitude } = req.body;
   
   // Validate latitude
-  if (typeof latitude !== 'number' || isNaN(latitude)) {
-    return res.status(400).json({ error: 'Invalid latitude: must be a number' });
+  if (typeof latitude !== 'number' || isNaN(latitude) || !Number.isFinite(latitude)) {
+    return res.status(400).json({ error: 'Invalid latitude: must be a finite number' });
   }
   
   if (latitude < -90 || latitude > 90) {
@@ -26,8 +31,8 @@ function validateCoordinates(req, res, next) {
   }
   
   // Validate longitude
-  if (typeof longitude !== 'number' || isNaN(longitude)) {
-    return res.status(400).json({ error: 'Invalid longitude: must be a number' });
+  if (typeof longitude !== 'number' || isNaN(longitude) || !Number.isFinite(longitude)) {
+    return res.status(400).json({ error: 'Invalid longitude: must be a finite number' });
   }
   
   if (longitude < -180 || longitude > 180) {

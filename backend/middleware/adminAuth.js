@@ -24,7 +24,9 @@ const failedAttempts = new LRUCache({
  * Authentication middleware that validates the admin API key.
  */
 function authenticateAdminWithRateLimit(req, res, next) {
-  const ip = req.ip || req.socket.remoteAddress;
+  // Get IP with proper fallback (req.connection is deprecated since Node v13)
+  // Fall back to 'unknown' to prevent crashes, though this may affect rate limiting
+  const ip = req.ip || req.socket?.remoteAddress || 'unknown';
   const apiKey = req.headers['x-api-key'];
   const expectedKey = process.env.ADMIN_API_KEY;
 
