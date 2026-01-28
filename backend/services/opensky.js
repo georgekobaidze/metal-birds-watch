@@ -105,26 +105,43 @@ async function fetchPlanes(lat, lon, radiusKm) {
   // Get valid access token
   const token = await getValidToken();
   
+  // Create abort controller for timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+  
   try {
     const response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Accept': 'application/json'
-      }
+      },
+      signal: controller.signal
     });
     
     if (!response.ok) {
       throw new Error(`OpenSky API error: ${response.status} ${response.statusText}`);
     }
     
-    const data = await response.json();
+    // Parse JSON with error handling
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      throw new Error(`Invalid JSON response from OpenSky API: ${jsonError.message}`);
+    }
     
     // Parse OpenSky response format
     return parseStates(data.states || []);
     
   } catch (error) {
+    // Handle specific abort/timeout error
+    if (error.name === 'AbortError') {
+      throw new Error('OpenSky API request timeout after 15 seconds');
+    }
     console.error('Error fetching from OpenSky API:', error.message);
     throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 

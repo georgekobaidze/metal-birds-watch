@@ -24,7 +24,7 @@ const failedAttempts = new LRUCache({
  * Authentication middleware that validates the admin API key.
  */
 function authenticateAdminWithRateLimit(req, res, next) {
-  const ip = req.ip || req.socket.remoteAddress;
+  const ip = req.ip || req.connection?.remoteAddress || req.socket?.remoteAddress || 'unknown';
   const apiKey = req.headers['x-api-key'];
   const expectedKey = process.env.ADMIN_API_KEY;
 

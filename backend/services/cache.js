@@ -28,8 +28,8 @@ function get(gridKey) {
   
   // Cache is fresh (LRU already filtered expired entries)
   return {
-    // Return a shallow copy to prevent callers from mutating cached data
-    planes: Array.isArray(cached.planes) ? cached.planes.slice() : cached.planes,
+    // Return a deep copy to prevent callers from mutating cached data
+    planes: Array.isArray(cached.planes) ? Object.freeze(cached.planes.slice()) : [],
     cacheAge,
     nextUpdateIn: Math.max(0, CACHE_TTL_SECONDS - cacheAge)
   };
@@ -93,17 +93,27 @@ function getSnapshot() {
   const now = Date.now();
   const entries = [];
   
-  for (const [key, value] of cache.entries()) {
-    const age = Math.floor((now - value.timestamp) / 1000);
-    const remaining = Math.max(0, CACHE_TTL_SECONDS - age);
-    
-    entries.push({
-      gridKey: key,
-      planeCount: value.planes.length,
-      ageSeconds: age,
-      remainingSeconds: remaining,
-      timestamp: new Date(value.timestamp).toISOString()
-    });
+  try {
+    for (const [key, value] of cache.entries()) {
+      const age = Math.floor((now - value.timestamp) / 1000);
+      const remaining = Math.max(0, CACHE_TTL_SECONDS - age);
+      
+      entries.push({
+        gridKey: key,
+        planeCount: value.planes.length,
+        ageSeconds: age,
+        remainingSeconds: remaining,
+        timestamp: new Date(value.timestamp).toISOString()
+      });
+    }
+  } catch (error) {
+    console.error('Error iterating cache entries:', error);
+    // Return partial results with error flag
+    return {
+      stats: getStats(),
+      entries: entries.sort((a, b) => a.ageSeconds - b.ageSeconds),
+      error: 'Partial results - error during iteration'
+    };
   }
   
   return {

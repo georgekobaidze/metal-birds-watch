@@ -52,13 +52,33 @@ app.get('/api/health', (req, res) => {
 
 // Error handling middleware (must be last!)
 app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
+    // Log full error details internally
+    console.error('Unhandled error:', {
+        message: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method
+    });
+    
+    // Return sanitized error to client (don't expose internal details)
     res.status(500).json({
         error: 'Internal server error. Please try again later.'
     });
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+});
+
+// Handle server startup errors
+server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+        console.error(`Error: Port ${PORT} is already in use`);
+    } else if (error.code === 'EACCES') {
+        console.error(`Error: Permission denied to bind to port ${PORT}`);
+    } else {
+        console.error('Server error:', error);
+    }
+    process.exit(1);
 });
