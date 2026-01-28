@@ -16,7 +16,7 @@ const failedAttempts = new LRUCache({
   max: 1000,  // Maximum 1000 IP addresses tracked
   ttl: 5 * 60 * 1000,  // 5 minutes TTL
   ttlAutopurge: true,  // Automatically remove expired entries
-  updateAgeOnGet: true,  // Reset TTL when accessed (keep active attackers tracked)
+  updateAgeOnGet: false,  // Don't reset TTL when accessed (ensures cleanup after 5 minutes)
   updateAgeOnHas: false  // Don't reset TTL on has() check
 });
 
@@ -25,7 +25,7 @@ const failedAttempts = new LRUCache({
  * Only counts failed authentication attempts
  */
 function authenticateAdminWithRateLimit(req, res, next) {
-  const ip = req.ip || req.connection.remoteAddress;
+  const ip = req.ip || req.socket.remoteAddress;
   const apiKey = req.headers['x-api-key'];
   const expectedKey = process.env.ADMIN_API_KEY;
   
