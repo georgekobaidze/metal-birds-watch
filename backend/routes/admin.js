@@ -1,35 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const cache = require('../services/cache');
-const { adminRateLimiter } = require('../middleware/rateLimit');
-
-/**
- * Middleware to authenticate admin requests
- */
-function authenticateAdmin(req, res, next) {
-  const apiKey = req.headers['x-api-key'];
-  const expectedKey = process.env.ADMIN_API_KEY;
-  
-  if (!expectedKey) {
-    return res.status(503).json({
-      error: 'Admin API not configured'
-    });
-  }
-  
-  if (!apiKey || apiKey !== expectedKey) {
-    return res.status(401).json({
-      error: 'Unauthorized - Invalid or missing API key'
-    });
-  }
-  
-  next();
-}
+const { authenticateAdminWithRateLimit } = require('../middleware/adminAuth');
 
 /**
  * GET /api/admin/cache/snapshot
  * Get full cache snapshot with stats and all entries
  */
-router.get('/cache/snapshot', adminRateLimiter, authenticateAdmin, (req, res) => {
+router.get('/cache/snapshot', authenticateAdminWithRateLimit, (req, res) => {
   try {
     const snapshot = cache.getSnapshot();
     res.json({
@@ -48,7 +26,7 @@ router.get('/cache/snapshot', adminRateLimiter, authenticateAdmin, (req, res) =>
  * POST /api/admin/cache/clear
  * Clear all cache (use with caution!)
  */
-router.post('/cache/clear', adminRateLimiter, authenticateAdmin, (req, res) => {
+router.post('/cache/clear', authenticateAdminWithRateLimit, (req, res) => {
   try {
     cache.clear();
     res.json({
