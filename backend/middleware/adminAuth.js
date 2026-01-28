@@ -1,3 +1,5 @@
+const { LRUCache } = require('lru-cache');
+
 /**
  * Smart admin authentication with rate limiting
  * 
@@ -7,20 +9,16 @@
  * - After 10 failed attempts → Block ALL requests from IP for 1 minute 🚫
  */
 
-// Track failed authentication attempts per IP
-const failedAttempts = new Map();
-
-// Cleanup old entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  const CLEANUP_AGE = 5 * 60 * 1000; // 5 minutes
-  
-  for (const [ip, data] of failedAttempts.entries()) {
-    if (now - data.firstAttempt > CLEANUP_AGE) {
-      failedAttempts.delete(ip);
-    }
-  }
-}, 5 * 60 * 1000);
+// Track failed authentication attempts per IP using LRU cache
+// LRU cache prevents memory exhaustion from distributed attacks across many IPs
+// Max 1000 IPs tracked, with 5-minute TTL for automatic cleanup
+const failedAttempts = new LRUCache({
+  max: 1000,  // Maximum 1000 IP addresses tracked
+  ttl: 5 * 60 * 1000,  // 5 minutes TTL
+  ttlAutopurge: true,  // Automatically remove expired entries
+  updateAgeOnGet: true,  // Reset TTL when accessed (keep active attackers tracked)
+  updateAgeOnHas: false  // Don't reset TTL on has() check
+});
 
 /**
  * Combined authentication + rate limiting middleware
