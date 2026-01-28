@@ -11,7 +11,6 @@ router.get('/cache/snapshot', authenticateAdminWithRateLimit, (req, res) => {
   try {
     const snapshot = cache.getSnapshot();
     res.json({
-      success: true,
       snapshot
     });
   } catch (error) {
@@ -30,7 +29,6 @@ router.post('/cache/clear', authenticateAdminWithRateLimit, (req, res) => {
   try {
     cache.clear();
     res.json({
-      success: true,
       message: 'Cache cleared successfully'
     });
   } catch (error) {

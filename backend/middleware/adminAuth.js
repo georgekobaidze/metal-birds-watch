@@ -21,14 +21,13 @@ const failedAttempts = new LRUCache({
 });
 
 /**
- * Combined authentication + rate limiting middleware
- * Only counts failed authentication attempts
+ * Authentication middleware that validates the admin API key.
  */
 function authenticateAdminWithRateLimit(req, res, next) {
   const ip = req.ip || req.socket.remoteAddress;
   const apiKey = req.headers['x-api-key'];
   const expectedKey = process.env.ADMIN_API_KEY;
-  
+
   // Check if admin API is configured
   if (!expectedKey) {
     return res.status(503).json({
@@ -80,6 +79,15 @@ function authenticateAdminWithRateLimit(req, res, next) {
   next();
 }
 
+/**
+ * Cleanup function to stop the interval timer
+ * Should be called when shutting down the server
+ */
+function cleanup() {
+  clearInterval(cleanupInterval);
+}
+
 module.exports = {
-  authenticateAdminWithRateLimit
+  authenticateAdminWithRateLimit,
+  cleanup
 };
