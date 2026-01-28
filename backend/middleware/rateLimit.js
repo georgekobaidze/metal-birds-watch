@@ -16,6 +16,23 @@ const planesRateLimiter = rateLimit({
   // keyGenerator defaults to req.ip (respects trust proxy and handles IPv6)
 });
 
+/**
+ * Rate limiter for admin endpoints
+ * Only counts FAILED authentication attempts (wrong API key)
+ * Allows unlimited successful requests with correct key
+ */
+const adminRateLimiter = rateLimit({
+  windowMs: 60000,  // 1 minute
+  max: 10,  // Max 10 failed attempts per minute
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,  // Don't count successful requests (status < 400)
+  message: {
+    error: 'Too many failed authentication attempts. Please wait before trying again.'
+  }
+});
+
 module.exports = {
-  planesRateLimiter
+  planesRateLimiter,
+  adminRateLimiter
 };

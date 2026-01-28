@@ -37,7 +37,10 @@ app.use(express.json());
 
 // Routes
 const planesRoute = require('./routes/planes');
+const adminRoute = require('./routes/admin');
+
 app.use('/api', planesRoute);
+app.use('/api/admin', adminRoute);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
