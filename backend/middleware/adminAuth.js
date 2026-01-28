@@ -7,7 +7,21 @@
  * - After 10 failed attempts → Block ALL requests from IP for 1 minute 🚫
  */
 
-const { adminRateLimiter } = require('./rateLimit');
+// Track failed authentication attempts per IP
+const failedAttempts = new Map();
+
+// Cleanup old entries every 5 minutes
+// Using unref() to allow graceful process exit when idle
+const cleanupInterval = setInterval(() => {
+  const now = Date.now();
+  const CLEANUP_AGE = 5 * 60 * 1000; // 5 minutes
+  
+  for (const [ip, data] of failedAttempts.entries()) {
+    if (now - data.firstAttempt > CLEANUP_AGE) {
+      failedAttempts.delete(ip);
+    }
+  }
+}, 5 * 60 * 1000).unref();
 
 /**
  * Authentication middleware that validates the admin API key.
@@ -34,17 +48,14 @@ function authenticateAdmin(req, res, next) {
 }
 
 /**
- * Combined authentication + rate limiting middleware.
- * Rate limiting is delegated to the shared adminRateLimiter middleware.
+ * Cleanup function to stop the interval timer
+ * Should be called when shutting down the server
  */
-function authenticateAdminWithRateLimit(req, res, next) {
-  adminRateLimiter(req, res, function (err) {
-    if (err) {
-      return next(err);
-    }
-    authenticateAdmin(req, res, next);
-  });
+function cleanup() {
+  clearInterval(cleanupInterval);
 }
+
 module.exports = {
-  authenticateAdminWithRateLimit
+  authenticateAdminWithRateLimit,
+  cleanup
 };
