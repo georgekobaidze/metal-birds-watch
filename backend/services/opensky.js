@@ -127,7 +127,9 @@ async function fetchPlanes(lat, lon, radiusKm) {
     try {
       data = await response.json();
     } catch (jsonError) {
-      throw new Error(`Invalid JSON response from OpenSky API: ${jsonError.message}`);
+      // Log detailed error internally, return generic error to caller
+      console.error('JSON parsing error from OpenSky API:', jsonError.message);
+      throw new Error('Invalid JSON response from OpenSky API');
     }
     
     // Parse OpenSky response format

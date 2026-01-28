@@ -66,13 +66,12 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start server
+// Start server with error handling
 const server = app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-});
-
-// Handle server startup errors
-server.on('error', (error) => {
+})
+.on('error', (error) => {
+    // Handle server startup errors
     if (error.code === 'EADDRINUSE') {
         console.error(`Error: Port ${PORT} is already in use`);
     } else if (error.code === 'EACCES') {
