@@ -1,7 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const cache = require('../services/cache');
 const { authenticateAdminWithRateLimit } = require('../middleware/adminAuth');
+
+/**
+ * Rate limiter for successful admin actions to prevent DoS
+ * Limits high-impact operations like cache clearing
+ */
+const adminActionLimiter = rateLimit({
+  windowMs: 60000,  // 1 minute
+  max: 10,  // Max 10 actions per minute (even with correct key)
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipFailedRequests: true,  // Only count successful requests
+  message: {
+    error: 'Too many admin actions. Please wait before trying again.'
+  }
+});
 
 /**
  * GET /api/admin/cache/snapshot
@@ -25,7 +41,7 @@ router.get('/cache/snapshot', authenticateAdminWithRateLimit, (req, res) => {
  * POST /api/admin/cache/clear
  * Clear all cache (use with caution!)
  */
-router.post('/cache/clear', authenticateAdminWithRateLimit, (req, res) => {
+router.post('/cache/clear', authenticateAdminWithRateLimit, adminActionLimiter, (req, res) => {
   try {
     cache.clear();
     res.json({

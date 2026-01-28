@@ -23,7 +23,7 @@ router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) 
     if (cachedData) {
       // Cache hit - add jitter to spread out next requests
       const jitter = Math.floor(Math.random() * 6); // 0-5 seconds
-      cachedData.nextUpdateIn += jitter;
+      cachedData.nextUpdateIn = Math.max(0, (cachedData.nextUpdateIn || 0) + jitter);
       
       return res.json(cachedData);
     }
@@ -39,7 +39,7 @@ router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) 
         cachedData = cache.get(gridKey);
         if (cachedData) {
           const jitter = Math.floor(Math.random() * 6);
-          cachedData.nextUpdateIn += jitter;
+          cachedData.nextUpdateIn = Math.max(0, (cachedData.nextUpdateIn || 0) + jitter);
           return res.json(cachedData);
         }
       } catch (error) {
@@ -66,7 +66,7 @@ router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) 
       
       if (cachedData) {
         const jitter = Math.floor(Math.random() * 6);
-        cachedData.nextUpdateIn += jitter;
+        cachedData.nextUpdateIn = Math.max(0, (cachedData.nextUpdateIn || 0) + jitter);
         return res.json(cachedData);
       }
       

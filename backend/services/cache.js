@@ -26,10 +26,14 @@ function get(gridKey) {
   // Calculate cache age from stored timestamp
   const cacheAge = Math.floor((Date.now() - cached.timestamp) / 1000);
   
+  // Ensure planes is always an array
+  const planesArray = Array.isArray(cached.planes) ? cached.planes : [];
+  
   // Cache is fresh (LRU already filtered expired entries)
   return {
-    // Return a shallow copy to prevent callers from mutating cached data
-    planes: Array.isArray(cached.planes) ? cached.planes.slice() : cached.planes,
+    // Return a shallow copy (frozen to prevent array mutation, though objects inside can still be mutated)
+    // Callers should treat this data as read-only
+    planes: Object.freeze(planesArray.slice()),
     cacheAge,
     nextUpdateIn: Math.max(0, CACHE_TTL_SECONDS - cacheAge)
   };
@@ -93,21 +97,48 @@ function getSnapshot() {
   const now = Date.now();
   const entries = [];
   
-  for (const [key, value] of cache.entries()) {
-    const age = Math.floor((now - value.timestamp) / 1000);
-    const remaining = Math.max(0, CACHE_TTL_SECONDS - age);
-    
-    entries.push({
-      gridKey: key,
-      planeCount: value.planes.length,
-      ageSeconds: age,
-      remainingSeconds: remaining,
-      timestamp: new Date(value.timestamp).toISOString()
-    });
+  // Get stats first (before iterating entries in case of error)
+  let stats;
+  try {
+    stats = getStats();
+  } catch (statsError) {
+    console.error('Error getting cache stats:', statsError);
+    stats = {
+      totalEntries: 0,
+      maxEntries: cache.max,
+      freshEntries: 0,
+      expiringSoonEntries: 0,
+      ttlSeconds: CACHE_TTL_SECONDS,
+      calculatedSize: 0,
+      error: 'Failed to retrieve stats'
+    };
+  }
+  
+  try {
+    for (const [key, value] of cache.entries()) {
+      const age = Math.floor((now - value.timestamp) / 1000);
+      const remaining = Math.max(0, CACHE_TTL_SECONDS - age);
+      
+      entries.push({
+        gridKey: key,
+        planeCount: value.planes.length,
+        ageSeconds: age,
+        remainingSeconds: remaining,
+        timestamp: new Date(value.timestamp).toISOString()
+      });
+    }
+  } catch (error) {
+    console.error('Error iterating cache entries:', error);
+    // Return partial results with error flag
+    return {
+      stats,
+      entries: entries.sort((a, b) => a.ageSeconds - b.ageSeconds),
+      error: 'Partial results - error during iteration'
+    };
   }
   
   return {
-    stats: getStats(),
+    stats,
     entries: entries.sort((a, b) => a.ageSeconds - b.ageSeconds) // Sort by age
   };
 }
