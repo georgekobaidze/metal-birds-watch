@@ -11,6 +11,7 @@
 const failedAttempts = new Map();
 
 // Cleanup old entries every 5 minutes
+// Using unref() to allow graceful process exit when idle
 const cleanupInterval = setInterval(() => {
   const now = Date.now();
   const CLEANUP_AGE = 5 * 60 * 1000; // 5 minutes
@@ -20,7 +21,7 @@ const cleanupInterval = setInterval(() => {
       failedAttempts.delete(ip);
     }
   }
-}, 5 * 60 * 1000);
+}, 5 * 60 * 1000).unref();
 
 /**
  * Combined authentication + rate limiting middleware
@@ -84,9 +85,7 @@ function authenticateAdminWithRateLimit(req, res, next) {
  * Should be called when shutting down the server
  */
 function cleanup() {
-  if (cleanupInterval) {
-    clearInterval(cleanupInterval);
-  }
+  clearInterval(cleanupInterval);
 }
 
 module.exports = {
