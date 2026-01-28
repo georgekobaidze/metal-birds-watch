@@ -79,15 +79,6 @@ function authenticateAdminWithRateLimit(req, res, next) {
   next();
 }
 
-/**
- * Cleanup function to stop the interval timer
- * Should be called when shutting down the server
- */
-function cleanup() {
-  clearInterval(cleanupInterval);
-}
-
 module.exports = {
-  authenticateAdminWithRateLimit,
-  cleanup
+  authenticateAdminWithRateLimit
 };
