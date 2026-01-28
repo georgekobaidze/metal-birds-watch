@@ -25,8 +25,15 @@ const failedAttempts = new LRUCache({
  */
 function authenticateAdminWithRateLimit(req, res, next) {
   // Get IP with proper fallback (req.connection is deprecated since Node v13)
-  // Fall back to 'unknown' to prevent crashes, though this may affect rate limiting
-  const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+  const ip = req.ip || req.socket?.remoteAddress;
+
+  // If we cannot determine an IP address, reject the request to avoid
+  // conflating multiple clients under a single fallback identifier.
+  if (!ip) {
+    return res.status(400).json({
+      error: 'Unable to determine client IP address'
+    });
+  }
   const apiKey = req.headers['x-api-key'];
   const expectedKey = process.env.ADMIN_API_KEY;
 
