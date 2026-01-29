@@ -5,6 +5,8 @@
 let isPolling = false;
 let pollTimeout = null;
 let planesData = [];
+let totalDetectedPlanes = new Set(); // Track all planes ever detected (by ICAO24)
+let fastestSpeed = 0; // Track fastest speed detected in session (km/h)
 
 /**
  * Process planes data from API
@@ -26,6 +28,19 @@ function processPlanes(data) {
       plane.latitude,
       plane.longitude
     );
+    
+    // Track total planes detected (cumulative) - ONLY within 12km circle
+    if (plane.distance <= CONFIG.DETECTION_RADIUS_KM) {
+      totalDetectedPlanes.add(plane.icao24);
+    }
+    
+    // Track fastest speed (convert m/s to km/h)
+    if (plane.velocity && plane.velocity > 0) {
+      const speedKmh = Math.round(plane.velocity * 3.6);
+      if (speedKmh > fastestSpeed) {
+        fastestSpeed = speedKmh;
+      }
+    }
   });
   
   // Sort by distance (closest first)
@@ -34,7 +49,49 @@ function processPlanes(data) {
   // Update UI
   updateStats(data);
   
+  // Update plane markers on map
+  if (window.updatePlaneMarkers) {
+    updatePlaneMarkers(planesData);
+  }
+  
   debug(`Processed ${planesData.length} planes. Closest: ${planesData[0]?.distance.toFixed(2)}km`);
+}
+
+/**
+ * Get sky activity indicator based on plane count
+ * @param {number} count - Number of planes nearby
+ * @returns {Object} Activity data with level, label, bars
+ */
+function getSkyActivityData(count) {
+  let level, label, bars;
+  
+  if (count === 0) {
+    level = 'idle';
+    label = 'Idle';
+    bars = '▁▁▁▁▁';
+  } else if (count <= 2) {
+    level = 'quiet';
+    label = 'Quiet';
+    bars = '▂▁▁▁▁';
+  } else if (count <= 5) {
+    level = 'light';
+    label = 'Light';
+    bars = '▃▂▁▁▁';
+  } else if (count <= 10) {
+    level = 'moderate';
+    label = 'Moderate';
+    bars = '▅▃▂▁▁';
+  } else if (count <= 15) {
+    level = 'busy';
+    label = 'Busy';
+    bars = '▆▅▃▂▁';
+  } else {
+    level = 'very-busy';
+    label = 'Very Busy';
+    bars = '▇▆▅▃▂';
+  }
+  
+  return { level, label, bars };
 }
 
 /**
@@ -42,8 +99,20 @@ function processPlanes(data) {
  * @param {Object} data - Response from backend
  */
 function updateStats(data) {
-  // Update plane count
-  updateText('planes-count', data.planes.length);
+  // Update total detected (all time, session-based)
+  updateText('total-detected', totalDetectedPlanes.size);
+  
+  // Get nearby count for activity indicator
+  const nearbyCount = data.planes.length;
+  
+  // Update sky activity indicator with count in brackets
+  const activity = getSkyActivityData(nearbyCount);
+  const activityElement = document.getElementById('sky-activity');
+  if (activityElement) {
+    activityElement.textContent = `${activity.bars} ${activity.label} [${nearbyCount}]`;
+    activityElement.className = 'stat-value';
+    activityElement.classList.add(`activity-${activity.level}`);
+  }
   
   // Update closest distance
   if (planesData.length > 0) {
@@ -52,11 +121,12 @@ function updateStats(data) {
     updateText('closest-distance', '--');
   }
   
-  // Update next update timer
-  updateText('next-update', formatTime(data.nextUpdateIn));
-  
-  // Update cache age
-  updateText('cache-age', formatTime(data.cacheAge));
+  // Update fastest speed
+  if (fastestSpeed > 0) {
+    updateText('fastest-speed', `${fastestSpeed} km/h`);
+  } else {
+    updateText('fastest-speed', '--');
+  }
   
   // Update connection status
   updateConnectionStatus(true);

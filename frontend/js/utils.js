@@ -63,12 +63,13 @@ function formatTime(seconds) {
 /**
  * Get distance category
  * @param {number} distance - Distance in km
- * @returns {string} Category: 'close', 'medium', or 'far'
+ * @returns {string} Category: 'close', 'medium', 'far', or 'outside'
  */
 function getDistanceCategory(distance) {
   if (distance < CONFIG.DISTANCE_CLOSE) return 'close';
   if (distance < CONFIG.DISTANCE_MEDIUM) return 'medium';
-  return 'far';
+  if (distance < CONFIG.DISTANCE_FAR) return 'far';
+  return 'outside'; // Beyond 12km
 }
 
 /**
@@ -82,7 +83,8 @@ function getDistanceColor(distance) {
     case 'close': return '#ff006e';
     case 'medium': return '#ffd60a';
     case 'far': return '#7cfc00';
-    default: return '#7cfc00';
+    case 'outside': return '#718096';
+    default: return '#718096';
   }
 }
 

@@ -55,8 +55,13 @@
         </div>
         
         <div class="stat-item">
-            <div class="stat-value" id="planes-count">0</div>
-            <div class="stat-label">Planes Detected</div>
+            <div class="stat-value" id="sky-activity">--</div>
+            <div class="stat-label">Nearby Traffic</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="total-detected">0</div>
+            <div class="stat-label">Aircraft Spotted</div>
         </div>
         
         <div class="stat-item">
@@ -65,13 +70,8 @@
         </div>
         
         <div class="stat-item">
-            <div class="stat-value" id="next-update">--</div>
-            <div class="stat-label">Next Update</div>
-        </div>
-        
-        <div class="stat-item">
-            <div class="stat-value" id="cache-age">--</div>
-            <div class="stat-label">Cache Age</div>
+            <div class="stat-value" id="fastest-speed">--</div>
+            <div class="stat-label">Fastest Spotted</div>
         </div>
 
         <div class="connection-status" id="connection-status">
@@ -94,6 +94,10 @@
             <div class="legend-item">
                 <span class="legend-color" style="background: #7cfc00;"></span>
                 <span class="legend-text">7-12km</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #718096; opacity: 0.5;"></span>
+                <span class="legend-text">Outside</span>
             </div>
         </div>
         <div class="location-info" id="location-info">
