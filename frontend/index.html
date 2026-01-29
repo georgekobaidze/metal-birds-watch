@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time plane tracking and notifications">
+    <title>Metal Birds Watch - Track Planes Overhead</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <img src="assets/icons/logo.png" alt="Metal Birds Watch" class="logo" id="logo">
+            <h1 class="app-title">METAL BIRDS WATCH</h1>
+        </div>
+        <div class="header-right">
+            <button class="header-btn" id="notifications-btn" title="Notifications">
+                🔔
+                <span class="badge" id="notification-badge">0</span>
+            </button>
+            <button class="header-btn" id="logbook-btn" title="Logbook">
+                📖
+                <span class="badge" id="logbook-badge">0</span>
+            </button>
+            <button class="header-btn" id="settings-btn" title="Settings">
+                ⚙️
+            </button>
+        </div>
+    </header>
+
+    <!-- Map Container -->
+    <div id="map" class="map-container"></div>
+
+    <!-- Stats Panel -->
+    <div class="stats-panel" id="stats-panel">
+        <div class="panel-header">
+            <span class="panel-icon">📡</span>
+            <span class="panel-title">RADAR STATUS</span>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="planes-count">0</div>
+            <div class="stat-label">Planes Detected</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="closest-distance">--</div>
+            <div class="stat-label">Closest Plane</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="next-update">--</div>
+            <div class="stat-label">Next Update</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="cache-age">--</div>
+            <div class="stat-label">Cache Age</div>
+        </div>
+
+        <div class="connection-status" id="connection-status">
+            <span class="status-dot online"></span>
+            <span class="status-text">ONLINE</span>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ff006e;"></span>
+                <span class="legend-text">0-3km</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ffd60a;"></span>
+                <span class="legend-text">3-7km</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #7cfc00;"></span>
+                <span class="legend-text">7-12km</span>
+            </div>
+        </div>
+        <div class="location-info" id="location-info">
+            <span class="location-icon">📍</span>
+            <span class="location-text" id="location-text">Detecting location...</span>
+        </div>
+        <div class="theme-info" id="theme-info">
+            <span class="theme-icon">🌙</span>
+            <span class="theme-text" id="theme-text">Dark Mode</span>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <img src="assets/icons/logo.png" alt="Logo" class="loading-logo">
+            <div class="loading-text">INITIALIZING RADAR...</div>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/logbook.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

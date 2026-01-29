@@ -1,0 +1,143 @@
+/* ============================================
+   CSS VARIABLES - THEME COLORS
+   Based on Metal Birds Watch neon logo
+   ============================================ */
+
+:root {
+  /* Brand Colors (from logo) */
+  --neon-cyan: #00d4ff;
+  --neon-green: #7cfc00;
+  --bright-green: #00ff66;
+  
+  /* Distance-based colors */
+  --color-close: #ff006e;     /* Red: 0-3km */
+  --color-medium: #ffd60a;    /* Yellow: 3-7km */
+  --color-far: #7cfc00;       /* Green: 7-12km */
+  
+  /* Glow effects */
+  --cyan-glow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.4);
+  --green-glow: 0 0 20px rgba(124, 252, 0, 0.8), 0 0 40px rgba(124, 252, 0, 0.4);
+  --red-glow: 0 0 20px rgba(255, 0, 110, 0.8), 0 0 40px rgba(255, 0, 110, 0.4);
+  
+  /* Transitions */
+  --transition-speed: 0.3s;
+  --theme-transition: 0.5s;
+}
+
+/* ============================================
+   DARK THEME (Night: 6PM - 6AM)
+   ============================================ */
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #151922;
+  --bg-tertiary: #1e2230;
+  --bg-glass: rgba(21, 25, 34, 0.7);
+  --bg-glass-heavy: rgba(21, 25, 34, 0.9);
+  
+  /* Text */
+  --text-primary: #f8f9fa;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  
+  /* Borders */
+  --border-color: rgba(0, 212, 255, 0.3);
+  --border-hover: rgba(0, 212, 255, 0.6);
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  
+  /* Map tile URL */
+  --map-tiles: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+  
+  /* Theme-specific */
+  --theme-icon: '🌙';
+}
+
+/* ============================================
+   LIGHT THEME (Day: 6AM - 6PM)
+   ============================================ */
+[data-theme="light"] {
+  /* Backgrounds */
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e2e8f0;
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --bg-glass-heavy: rgba(255, 255, 255, 0.95);
+  
+  /* Text */
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  
+  /* Borders */
+  --border-color: rgba(0, 212, 255, 0.4);
+  --border-hover: rgba(0, 212, 255, 0.7);
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+  
+  /* Map tile URL */
+  --map-tiles: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+  
+  /* Theme-specific */
+  --theme-icon: '☀️';
+}
+
+/* ============================================
+   Z-INDEX LAYERS
+   ============================================ */
+:root {
+  --z-base: 1;
+  --z-map: 10;
+  --z-bottom-bar: 100;
+  --z-stats-panel: 200;
+  --z-header: 300;
+  --z-toast: 400;
+  --z-modal: 500;
+  --z-loading: 1000;
+}
+
+/* ============================================
+   SPACING SYSTEM
+   ============================================ */
+:root {
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+:root {
+  --font-tech: 'Orbitron', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  --font-size-xs: 10px;
+  --font-size-sm: 12px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 36px;
+  --font-size-4xl: 48px;
+}
+
+/* ============================================
+   BORDER RADIUS
+   ============================================ */
+:root {
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+}

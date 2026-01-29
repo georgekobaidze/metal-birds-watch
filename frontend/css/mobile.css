@@ -1,0 +1,59 @@
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+/* Mobile: < 768px */
+@media (max-width: 768px) {
+  .app-title {
+    display: none; /* Hide title on mobile */
+  }
+  
+  .header {
+    padding: 0 var(--spacing-md);
+  }
+  
+  .stats-panel {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    top: auto;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border: none;
+    border-top: 2px solid var(--neon-cyan);
+    animation: slide-in-bottom 0.5s ease;
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+  
+  .bottom-bar {
+    font-size: var(--font-size-xs);
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .legend {
+    gap: var(--spacing-sm);
+  }
+  
+  .legend-text {
+    font-size: 10px;
+  }
+  
+  .toast-container {
+    right: 10px;
+    left: 10px;
+  }
+}
+
+/* Tablet: 768px - 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .stats-panel {
+    right: 10px;
+    top: 70px;
+    min-width: 180px;
+  }
+  
+  .stat-value {
+    font-size: var(--font-size-2xl);
+  }
+}
