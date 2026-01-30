@@ -9,7 +9,7 @@
   --neon-green: #7cfc00;
   --bright-green: #00ff66;
   
-  // Distance-based colors
+  /* Distance-based colors */
   --color-close: #ff006e;     /* Red: 0-3km */
   --color-medium: #ffd60a;    /* Yellow: 3-7km */
   --color-far: #7cfc00;       /* Green: 7-12km */
