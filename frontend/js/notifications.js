@@ -340,13 +340,25 @@ function updateNotificationDropdown() {
     
     const timeAgo = formatTimeAgo(notification.timestamp);
     
-    item.innerHTML = `
-      <div class="notification-dot ${notification.read ? '' : 'active'}"></div>
-      <div class="notification-content">
-        <div class="notification-title">${notification.callsign} • ${notification.country}</div>
-        <div class="notification-meta">${notification.distance.toFixed(1)}km away • ${timeAgo}</div>
-      </div>
-    `;
+    const dot = document.createElement('div');
+    dot.className = `notification-dot ${notification.read ? '' : 'active'}`;
+    
+    const content = document.createElement('div');
+    content.className = 'notification-content';
+    
+    const title = document.createElement('div');
+    title.className = 'notification-title';
+    title.textContent = `${notification.callsign} • ${notification.country}`;
+    
+    const meta = document.createElement('div');
+    meta.className = 'notification-meta';
+    meta.textContent = `${notification.distance.toFixed(1)}km away • ${timeAgo}`;
+    
+    content.appendChild(title);
+    content.appendChild(meta);
+    
+    item.appendChild(dot);
+    item.appendChild(content);
     
     item.addEventListener('click', () => handleNotificationClick(notification));
     
