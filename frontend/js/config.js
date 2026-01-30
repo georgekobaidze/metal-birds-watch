@@ -9,9 +9,6 @@ const CONFIG = {
   // Detection settings
   DETECTION_RADIUS_KM: 12,
   
-  // Polling settings
-  UPDATE_JITTER_MAX_S: 3,  // Add 0-3 seconds jitter
-  
   // Distance thresholds (km)
   DISTANCE_CLOSE: 3,
   DISTANCE_MEDIUM: 7,
