@@ -320,8 +320,36 @@ function updateLocationText() {
 // Make updatePlaneMarkers available globally
 window.updatePlaneMarkers = updatePlaneMarkers;
 
+// Map ready state management
+window.mapReady = false;
+const mapReadyCallbacks = [];
+
+/**
+ * Register a callback to be called when map is ready
+ * If map is already ready, callback is called immediately
+ * @param {Function} callback - Function to call when map is ready
+ */
+window.onMapReady = function(callback) {
+  if (window.mapReady) {
+    callback();
+  } else {
+    mapReadyCallbacks.push(callback);
+  }
+};
+
+/**
+ * Notify all callbacks that map is ready
+ */
+function notifyMapReady() {
+  window.mapReady = true;
+  mapReadyCallbacks.forEach(callback => callback());
+  mapReadyCallbacks.length = 0; // Clear array
+}
+
 // Initialize map when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   initMap();
   getUserLocation();
+  // Notify that map is ready after initialization
+  notifyMapReady();
 });

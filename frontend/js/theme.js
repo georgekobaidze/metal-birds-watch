@@ -40,9 +40,16 @@ function applyTheme(theme) {
     if (themeIcon) themeIcon.textContent = '☀️';
   }
   
-  // Update map tiles if map exists
-  if (window.map) {
+  // Update map tiles if map exists (use onMapReady to handle race condition)
+  if (window.mapReady && window.map) {
     updateMapTiles(theme);
+  } else if (window.onMapReady) {
+    // Map not ready yet, schedule update for when it is
+    window.onMapReady(() => {
+      if (currentTheme === theme) {
+        updateMapTiles(theme);
+      }
+    });
   }
   
   debug(`Theme switched to: ${theme}`);
