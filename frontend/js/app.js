@@ -46,6 +46,11 @@ function processPlanes(data) {
   // Sort by distance (closest first)
   planesData.sort((a, b) => a.distance - b.distance);
   
+  // Check for new planes and send notifications
+  if (window.checkAndNotifyPlanes) {
+    checkAndNotifyPlanes(planesData);
+  }
+  
   // Update UI
   updateStats(data);
   
@@ -206,6 +211,56 @@ function hideLoadingScreen() {
 document.addEventListener('DOMContentLoaded', () => {
   debug('Metal Birds Watch initialized');
   debug('Backend API:', CONFIG.API_URL);
+  
+  // Initialize notification system
+  if (window.initNotifications) {
+    initNotifications();
+  }
+  
+  // Unlock audio on any user interaction (click, tap, key press)
+  const unlockAudioOnInteraction = () => {
+    if (window.unlockAudio) {
+      unlockAudio();
+    }
+  };
+  
+  document.addEventListener('click', unlockAudioOnInteraction, { once: true });
+  document.addEventListener('keydown', unlockAudioOnInteraction, { once: true });
+  document.addEventListener('touchstart', unlockAudioOnInteraction, { once: true });
+  
+  // Setup notification dropdown toggle
+  const notificationsBtn = document.getElementById('notifications-btn');
+  if (notificationsBtn) {
+    notificationsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleNotificationDropdown();
+    });
+  }
+  
+  // Setup clear notifications button
+  const clearBtn = document.getElementById('clear-notifications-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const confirmed = await showConfirmModal(
+        'Clear Notifications',
+        'Are you sure you want to clear all notifications? This action cannot be undone.'
+      );
+      if (confirmed) {
+        clearAllNotifications();
+      }
+    });
+  }
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('notification-dropdown');
+    const notificationsBtn = document.getElementById('notifications-btn');
+    
+    if (dropdown && !dropdown.contains(e.target) && !notificationsBtn.contains(e.target)) {
+      toggleNotificationDropdown(false);
+    }
+  });
   
   // Hide loading screen after initialization
   setTimeout(hideLoadingScreen, 2000);

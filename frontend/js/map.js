@@ -317,8 +317,36 @@ function updateLocationText() {
   }
 }
 
-// Make updatePlaneMarkers available globally
+/**
+ * Highlight a plane on the map and show its popup
+ * Called when clicking a notification
+ * @param {Object} plane - Plane object with icao24
+ */
+function highlightPlaneOnMap(plane) {
+  const marker = planeMarkers.get(plane.icao24);
+  
+  if (!marker) {
+    debug(`Marker not found for plane: ${plane.icao24}`);
+    return;
+  }
+  
+  // Pan to the plane's location
+  map.flyTo(marker.getLatLng(), 12, {
+    duration: 1,
+    easeLinearity: 0.5
+  });
+  
+  // Open the popup after flying
+  setTimeout(() => {
+    marker.openPopup();
+  }, 1000);
+  
+  debug(`Highlighted plane on map: ${plane.callsign || plane.icao24}`);
+}
+
+// Make functions available globally
 window.updatePlaneMarkers = updatePlaneMarkers;
+window.highlightPlaneOnMap = highlightPlaneOnMap;
 
 // Initialize map when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {

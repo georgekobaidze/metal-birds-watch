@@ -30,10 +30,27 @@
             <h1 class="app-title">METAL BIRDS WATCH</h1>
         </div>
         <div class="header-right">
-            <button class="header-btn" id="notifications-btn" title="Notifications">
-                🔔
-                <span class="badge" id="notification-badge">0</span>
-            </button>
+            <!-- Notification Bell -->
+            <div class="notification-wrapper">
+                <button class="header-btn" id="notifications-btn" title="Notifications">
+                    🔔
+                    <span class="badge" id="notification-badge" style="display: none;">0</span>
+                </button>
+                
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notification-dropdown">
+                    <div class="notification-header">
+                        <span class="notification-title">✈️ Aircraft Detected</span>
+                    </div>
+                    <div class="notification-list" id="notification-list">
+                        <div class="notification-empty">No aircraft detected yet</div>
+                    </div>
+                    <div class="notification-footer">
+                        <button class="clear-all-btn" id="clear-notifications-btn">Clear All</button>
+                    </div>
+                </div>
+            </div>
+            
             <button class="header-btn" id="logbook-btn" title="Logbook">
                 📖
                 <span class="badge" id="logbook-badge">0</span>
@@ -107,6 +124,22 @@
         <div class="theme-info" id="theme-info">
             <span class="theme-icon">🌙</span>
             <span class="theme-text" id="theme-text">Dark Mode</span>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <span class="modal-title" id="modal-title">Confirm Action</span>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="modal-message">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="modal-confirm">Confirm</button>
+            </div>
         </div>
     </div>
 

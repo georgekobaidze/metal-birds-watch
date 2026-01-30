@@ -172,12 +172,13 @@ body {
 
 /* Sky activity specific styling */
 #sky-activity {
-  font-size: var(--font-size-base);
-  letter-spacing: 2px;
+  font-size: 13px;
+  letter-spacing: 1px;
   font-weight: 700;
   transition: all 0.5s ease;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #sky-activity.activity-idle {
