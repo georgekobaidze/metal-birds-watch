@@ -6,19 +6,22 @@
  * Determines the appropriate API URL based on the environment.
  * In development (localhost), uses local backend.
  * In production, uses the deployed backend URL (configured via environment or defaults).
+ * 
+ * IMPORTANT: If you need to override the production URL, set window.ENV_API_URL 
+ * BEFORE this script loads. See frontend/CONFIG.md for details.
  */
 function getApiUrl() {
   // Check if we're in development (localhost)
+  // Note: file:// protocol is not supported for API calls due to CORS restrictions
   const isDevelopment = window.location.hostname === 'localhost' || 
-                        window.location.hostname === '127.0.0.1' ||
-                        window.location.hostname === '';
+                        window.location.hostname === '127.0.0.1';
   
   if (isDevelopment) {
     return 'http://localhost:3000/api/planes';
   }
   
-  // Production: Use environment variable or fallback
-  // This can be set via build-time replacement or a config file
+  // Production: Use custom URL if set, otherwise use default
+  // window.ENV_API_URL must be set before this script loads to take effect
   return window.ENV_API_URL || 'https://metal-birds-watch-backend.up.railway.app/api/planes';
 }
 
