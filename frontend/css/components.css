@@ -1,0 +1,137 @@
+/* ============================================
+   COMPONENT STYLES
+   ============================================ */
+
+/* User marker custom style */
+.user-marker {
+  width: 20px;
+  height: 20px;
+  background: var(--neon-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px rgba(0, 212, 255, 0.5);
+  animation: pulse-user 2s infinite;
+}
+
+@keyframes pulse-user {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* Remove Leaflet default marker icon */
+.user-marker-icon {
+  background: none !important;
+  border: none !important;
+}
+
+/* Plane marker styles */
+.plane-marker-icon {
+  background: none !important;
+  border: none !important;
+}
+
+.plane-marker-container {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s ease-out;
+  /* Animation removed - only apply on first appearance via JS */
+}
+
+/* Only animate on first appearance */
+.plane-marker-container.first-appearance {
+  animation: plane-detected 0.5s ease-out;
+}
+
+.plane-marker-icon.plane-close svg path {
+  fill: var(--color-close);
+}
+
+.plane-marker-icon.plane-medium svg path {
+  fill: var(--color-medium);
+}
+
+.plane-marker-icon.plane-far svg path {
+  fill: var(--color-far);
+}
+
+.plane-marker-icon.plane-outside svg path {
+  fill: var(--color-outside);
+  opacity: 0.5;
+}
+
+/* Plane popup styles */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-glass-heavy);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 0;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  min-width: 200px;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-glass-heavy);
+  backdrop-filter: blur(15px);
+}
+
+.plane-popup {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+.plane-popup-header {
+  background: var(--bg-secondary);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  font-family: var(--font-tech);
+  font-size: var(--font-size-lg);
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+}
+
+.plane-popup-body {
+  padding: var(--spacing-md);
+}
+
+.popup-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+  font-size: var(--font-size-sm);
+}
+
+.popup-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.popup-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Close button */
+.leaflet-popup-close-button {
+  color: var(--text-primary) !important;
+  font-size: 20px !important;
+  padding: 4px 8px !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--neon-cyan) !important;
+}
