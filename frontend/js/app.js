@@ -165,9 +165,8 @@ async function pollPlanes() {
     // Process the data
     processPlanes(data);
     
-    // Schedule next poll based on server's recommendation
-    const jitter = getJitter();
-    const nextPollMs = (data.nextUpdateIn + jitter) * 1000;
+    // Schedule next poll based on server's recommendation (already includes jitter)
+    const nextPollMs = data.nextUpdateIn * 1000;
     
     debug(`Next poll in ${(nextPollMs / 1000).toFixed(1)}s`);
     

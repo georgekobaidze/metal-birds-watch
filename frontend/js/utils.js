@@ -27,14 +27,6 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 }
 
 /**
- * Get random jitter value
- * @returns {number} Random jitter in seconds (0 to CONFIG.UPDATE_JITTER_MAX_S)
- */
-function getJitter() {
-  return Math.random() * CONFIG.UPDATE_JITTER_MAX_S;
-}
-
-/**
  * Format distance for display
  * @param {number} km - Distance in kilometers
  * @returns {string} Formatted distance
