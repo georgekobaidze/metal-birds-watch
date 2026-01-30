@@ -149,3 +149,65 @@ function debug(message, data = null) {
     console.log(`[DEBUG] ${message}`);
   }
 }
+
+/**
+ * Show custom confirmation modal
+ * @param {string} title - Modal title
+ * @param {string} message - Modal message
+ * @returns {Promise<boolean>} - Resolves to true if confirmed, false if cancelled
+ */
+function showConfirmModal(title, message) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('modal-overlay');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const confirmBtn = document.getElementById('modal-confirm');
+    const cancelBtn = document.getElementById('modal-cancel');
+    
+    if (!overlay) {
+      console.error('Modal overlay not found');
+      resolve(false);
+      return;
+    }
+    
+    // Set content
+    modalTitle.textContent = title;
+    modalMessage.textContent = message;
+    
+    // Show modal
+    overlay.classList.add('active');
+    
+    // Handle confirm
+    const handleConfirm = () => {
+      overlay.classList.remove('active');
+      cleanup();
+      resolve(true);
+    };
+    
+    // Handle cancel
+    const handleCancel = () => {
+      overlay.classList.remove('active');
+      cleanup();
+      resolve(false);
+    };
+    
+    // Cleanup listeners
+    const cleanup = () => {
+      confirmBtn.removeEventListener('click', handleConfirm);
+      cancelBtn.removeEventListener('click', handleCancel);
+      overlay.removeEventListener('click', handleOverlayClick);
+    };
+    
+    // Close on overlay click
+    const handleOverlayClick = (e) => {
+      if (e.target === overlay) {
+        handleCancel();
+      }
+    };
+    
+    // Add listeners
+    confirmBtn.addEventListener('click', handleConfirm);
+    cancelBtn.addEventListener('click', handleCancel);
+    overlay.addEventListener('click', handleOverlayClick);
+  });
+}
