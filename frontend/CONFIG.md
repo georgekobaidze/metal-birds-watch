@@ -46,9 +46,48 @@ The frontend doesn't use traditional environment variables since it's a static s
 2. Set `window.ENV_API_URL` in a separate `env.js` file
 3. Use URL query parameters (not recommended for production)
 
+## GitHub Pages Deployment
+
+### Automatic Deployment
+
+A GitHub Actions workflow is included at `.github/workflows/deploy.yml` that automatically deploys the frontend to GitHub Pages when you push to the `feature/front-end-backbone` branch.
+
+**To enable GitHub Pages:**
+1. Go to repository Settings → Pages
+2. Source: Select "GitHub Actions" as the deployment source
+3. The workflow will automatically deploy on the next push
+
+**The workflow:**
+- ✅ Deploys the `frontend/` directory to GitHub Pages
+- ✅ Works with the default backend URL (Railway)
+- ✅ Can inject custom backend URL via repository secrets (optional)
+
+### Custom Backend URL with GitHub Actions
+
+To use a custom backend URL in GitHub Pages:
+
+1. **Add a repository secret:**
+   - Go to Settings → Secrets and variables → Actions
+   - Create a new secret: `BACKEND_URL` with your backend URL
+
+2. **Uncomment the injection step in `.github/workflows/deploy.yml`:**
+   ```yaml
+   - name: Inject backend URL (optional)
+     run: |
+       echo "window.ENV_API_URL = '${{ secrets.BACKEND_URL }}';" > frontend/env.js
+   ```
+
+3. **Load the env.js file in `index.html` before `config.js`:**
+   ```html
+   <script src="env.js"></script>
+   <script src="js/config.js"></script>
+   ```
+
 ## Deployment Checklist
 
 - [ ] Ensure backend URL is accessible from the frontend domain
 - [ ] Update CORS settings in backend to allow frontend domain
 - [ ] Test API connectivity after deployment
 - [ ] Verify API URL is not hardcoded to localhost in production
+- [ ] Enable GitHub Pages in repository settings (if using GitHub Pages)
+- [ ] Configure repository secrets for custom backend URL (if needed)
