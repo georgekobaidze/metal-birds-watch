@@ -5,13 +5,16 @@
 The frontend automatically detects the environment and configures the API URL accordingly:
 
 ### Development Environment
-- **Detection**: When `window.location.hostname` is `localhost`, `127.0.0.1`, or empty
+- **Detection**: When `window.location.hostname` is `localhost` or `127.0.0.1`
 - **API URL**: `http://localhost:3000/api/planes`
 
 ### Production Environment
-- **Detection**: Any hostname other than localhost
+- **Detection**: Any hostname other than localhost or 127.0.0.1
 - **Default API URL**: `https://metal-birds-watch-backend.up.railway.app/api/planes`
 - **Custom Configuration**: Set `window.ENV_API_URL` before loading `config.js`
+
+### Notes
+- The `file://` protocol is not supported due to CORS restrictions. Always test via HTTP server (e.g., `python -m http.server` or `npx serve`).
 
 ## Customizing Production API URL
 

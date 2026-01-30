@@ -12,7 +12,7 @@
  */
 function getApiUrl() {
   // Check if we're in development (localhost)
-  // Note: file:// protocol is not supported for API calls due to CORS restrictions
+  // Note: Other protocols like file:// will be treated as production and may fail due to CORS
   const isDevelopment = window.location.hostname === 'localhost' || 
                         window.location.hostname === '127.0.0.1';
   
