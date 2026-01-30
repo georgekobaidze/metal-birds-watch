@@ -2,9 +2,29 @@
    CONFIGURATION
    ============================================ */
 
+/**
+ * Determines the appropriate API URL based on the environment.
+ * In development (localhost), uses local backend.
+ * In production, uses the deployed backend URL (configured via environment or defaults).
+ */
+function getApiUrl() {
+  // Check if we're in development (localhost)
+  const isDevelopment = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname === '';
+  
+  if (isDevelopment) {
+    return 'http://localhost:3000/api/planes';
+  }
+  
+  // Production: Use environment variable or fallback
+  // This can be set via build-time replacement or a config file
+  return window.ENV_API_URL || 'https://metal-birds-watch-backend.up.railway.app/api/planes';
+}
+
 const CONFIG = {
-  // Backend API
-  API_URL: 'http://localhost:3000/api/planes',
+  // Backend API - automatically configured based on environment
+  API_URL: getApiUrl(),
   
   // Detection settings
   DETECTION_RADIUS_KM: 12,
