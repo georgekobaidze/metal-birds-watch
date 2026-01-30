@@ -73,7 +73,7 @@
   backdrop-filter: blur(15px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 212, 255, 0.3);
   padding: 0;
 }
 
@@ -82,9 +82,43 @@
   min-width: 200px;
 }
 
+/* Popup arrow/tip pointing to plane */
+.leaflet-popup-tip-container {
+  position: relative;
+}
+
 .leaflet-popup-tip {
   background: var(--bg-glass-heavy);
   backdrop-filter: blur(15px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+}
+
+/* Add extra visual arrow with neon glow */
+.leaflet-popup-tip::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--neon-cyan);
+  filter: drop-shadow(0 0 8px var(--neon-cyan));
+  animation: arrow-pulse 2s infinite;
+}
+
+@keyframes arrow-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateX(-50%) translateY(2px);
+  }
 }
 
 .plane-popup {
