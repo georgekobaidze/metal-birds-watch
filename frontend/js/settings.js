@@ -275,7 +275,6 @@ function applyThemeMode(mode) {
       window.applyTheme(window.getThemeForTime());
     }
   }
-  // manual: do nothing, let user toggle freely
 }
 
 // Toast notification
@@ -301,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Apply theme mode on load
   const themeMode = Settings.get('themeMode');
-  if (themeMode && themeMode !== 'manual') {
+  if (themeMode) {
     applyThemeMode(themeMode);
   }
 });

@@ -93,11 +93,6 @@ function initTheme() {
     } else if (themeMode === 'light') {
       theme = 'light';
       manualOverride = true;
-    } else if (themeMode === 'manual') {
-      // Check for manual toggle override
-      const savedTheme = localStorage.getItem('theme-override');
-      theme = savedTheme || getThemeForTime();
-      manualOverride = !!savedTheme;
     } else {
       // auto mode
       theme = getThemeForTime();
@@ -128,7 +123,7 @@ function initTheme() {
   
   // Check for automatic theme changes every minute
   setInterval(() => {
-    // Only auto-switch if themeMode is 'auto' (not dark/light/manual)
+    // Only auto-switch if themeMode is 'auto' (not dark/light)
     if (window.Settings) {
       const themeMode = window.Settings.get('themeMode');
       if (themeMode === 'auto') {
