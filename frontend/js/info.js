@@ -204,7 +204,9 @@ function openBuiltByModal(highlightSocial = false) {
   if (highlightSocial) {
     // Wait for modal to open, then scroll and highlight social section
     setTimeout(() => {
-      const socialSection = document.querySelector('#info-social').closest('.info-section');
+      const infoSocialEl = document.querySelector('#info-social');
+      if (!infoSocialEl) return;
+      const socialSection = infoSocialEl.closest('.info-section');
       const modalBody = builtByModal.querySelector('.modal-body');
       
       if (socialSection && modalBody) {
