@@ -320,11 +320,18 @@ let dropdownClickHandlerInitialized = false;
 function initializeCustomDropdowns() {
   document.querySelectorAll('.custom-select').forEach(select => {
     const trigger = select.querySelector('.custom-select-trigger');
-    const options = select.querySelectorAll('.custom-select-option');
+    const options = Array.from(select.querySelectorAll('.custom-select-option'));
     
     // Remove existing listeners by cloning and replacing elements
     const newTrigger = trigger.cloneNode(true);
     trigger.parentNode.replaceChild(newTrigger, trigger);
+    
+    // Clone all options first to avoid issues with NodeList iteration
+    const newOptions = options.map(option => {
+      const newOption = option.cloneNode(true);
+      option.parentNode.replaceChild(newOption, option);
+      return newOption;
+    });
     
     // Toggle dropdown
     newTrigger.addEventListener('click', (e) => {
@@ -337,11 +344,7 @@ function initializeCustomDropdowns() {
     });
     
     // Select option
-    options.forEach(option => {
-      // Clone and replace to remove old listeners
-      const newOption = option.cloneNode(true);
-      option.parentNode.replaceChild(newOption, option);
-      
+    newOptions.forEach(newOption => {
       newOption.addEventListener('click', (e) => {
         e.stopPropagation();
         const value = newOption.dataset.value;
@@ -352,7 +355,7 @@ function initializeCustomDropdowns() {
         select.dataset.value = value;
         
         // Update selected state
-        select.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        newOptions.forEach(opt => opt.classList.remove('selected'));
         newOption.classList.add('selected');
         
         // Close dropdown
