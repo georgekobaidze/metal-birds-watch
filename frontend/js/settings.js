@@ -322,14 +322,14 @@ function initializeCustomDropdowns() {
     const trigger = select.querySelector('.custom-select-trigger');
     const options = Array.from(select.querySelectorAll('.custom-select-option'));
     
-    // Remove existing listeners by cloning and replacing elements
+    // Remove existing listeners by cloning and replacing trigger
     const newTrigger = trigger.cloneNode(true);
-    trigger.parentNode.replaceChild(newTrigger, trigger);
+    trigger.replaceWith(newTrigger);
     
     // Clone all options first to avoid issues with NodeList iteration
     const newOptions = options.map(option => {
       const newOption = option.cloneNode(true);
-      option.parentNode.replaceChild(newOption, option);
+      option.replaceWith(newOption);
       return newOption;
     });
     
