@@ -139,10 +139,15 @@ function showSettings() {
         <div class="settings-item">
           <label class="settings-label-block">
             <span>Unit system</span>
-            <select id="set-unit-system" class="settings-select">
-              <option value="metric" ${settings.unitSystem === 'metric' ? 'selected' : ''}>Metric (km, m, km/h)</option>
-              <option value="imperial" ${settings.unitSystem === 'imperial' ? 'selected' : ''}>Imperial (mi, ft, mph)</option>
-            </select>
+            <div class="custom-select" data-id="set-unit-system" data-value="${settings.unitSystem}">
+              <div class="custom-select-trigger">
+                <span>${settings.unitSystem === 'metric' ? 'Metric (km, m, km/h)' : 'Imperial (mi, ft, mph)'}</span>
+              </div>
+              <div class="custom-select-options">
+                <div class="custom-select-option ${settings.unitSystem === 'metric' ? 'selected' : ''}" data-value="metric">Metric (km, m, km/h)</div>
+                <div class="custom-select-option ${settings.unitSystem === 'imperial' ? 'selected' : ''}" data-value="imperial">Imperial (mi, ft, mph)</div>
+              </div>
+            </div>
           </label>
         </div>
         <div class="settings-item">
@@ -159,11 +164,16 @@ function showSettings() {
         <div class="settings-item">
           <label class="settings-label-block">
             <span>Default theme</span>
-            <select id="set-theme-mode" class="settings-select">
-              <option value="auto" ${settings.themeMode === 'auto' ? 'selected' : ''}>Auto (Time-based)</option>
-              <option value="dark" ${settings.themeMode === 'dark' ? 'selected' : ''}>Dark</option>
-              <option value="light" ${settings.themeMode === 'light' ? 'selected' : ''}>Light</option>
-            </select>
+            <div class="custom-select" data-id="set-theme-mode" data-value="${settings.themeMode}">
+              <div class="custom-select-trigger">
+                <span>${settings.themeMode === 'auto' ? 'Auto (Time-based)' : settings.themeMode === 'dark' ? 'Always Dark' : 'Always Light'}</span>
+              </div>
+              <div class="custom-select-options">
+                <div class="custom-select-option ${settings.themeMode === 'auto' ? 'selected' : ''}" data-value="auto">Auto (Time-based)</div>
+                <div class="custom-select-option ${settings.themeMode === 'dark' ? 'selected' : ''}" data-value="dark">Always Dark</div>
+                <div class="custom-select-option ${settings.themeMode === 'light' ? 'selected' : ''}" data-value="light">Always Light</div>
+              </div>
+            </div>
           </label>
           <p class="settings-help">Auto switches between light and dark at 6AM/6PM.</p>
         </div>
@@ -191,17 +201,24 @@ function showSettings() {
     const btnReset = document.getElementById('btn-reset-stats');
     
     if (btnReset) btnReset.addEventListener('click', handleResetStats);
+    
+    // Initialize custom dropdowns
+    initializeCustomDropdowns();
   }, 100);
 }
 
 // Save settings from modal form
 function saveSettingsFromModal() {
+  // Read from custom dropdowns
+  const unitSystemSelect = document.querySelector('[data-id="set-unit-system"]');
+  const themeModeSelect = document.querySelector('[data-id="set-theme-mode"]');
+  
   const newSettings = {
     soundEnabled: document.getElementById('set-sound')?.checked ?? true,
     browserNotificationsEnabled: document.getElementById('set-browser-notif')?.checked ?? true,
-    unitSystem: document.getElementById('set-unit-system')?.value ?? 'metric',
+    unitSystem: unitSystemSelect?.dataset.value ?? 'metric',
     useKnots: document.getElementById('set-use-knots')?.checked ?? false,
-    themeMode: document.getElementById('set-theme-mode')?.value ?? 'auto'
+    themeMode: themeModeSelect?.dataset.value ?? 'auto'
   };
   
   Settings.save(newSettings);
@@ -346,3 +363,49 @@ window.convertSpeed = convertSpeed;
 window.convertAltitude = convertAltitude;
 window.convertDistance = convertDistance;
 window.showSettings = showSettings;
+
+// Initialize custom dropdowns after modal is shown
+function initializeCustomDropdowns() {
+  document.querySelectorAll('.custom-select').forEach(select => {
+    const trigger = select.querySelector('.custom-select-trigger');
+    const options = select.querySelectorAll('.custom-select-option');
+    
+    // Toggle dropdown
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Close all other dropdowns
+      document.querySelectorAll('.custom-select.open').forEach(other => {
+        if (other !== select) other.classList.remove('open');
+      });
+      select.classList.toggle('open');
+    });
+    
+    // Select option
+    options.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const value = option.dataset.value;
+        const text = option.textContent;
+        
+        // Update UI
+        trigger.querySelector('span').textContent = text;
+        select.dataset.value = value;
+        
+        // Update selected state
+        options.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        
+        // Close dropdown
+        select.classList.remove('open');
+      });
+    });
+  });
+  
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.custom-select.open').forEach(select => {
+      select.classList.remove('open');
+    });
+  });
+}
+
