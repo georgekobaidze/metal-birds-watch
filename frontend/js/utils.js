@@ -159,20 +159,36 @@ function debug(message, data = null) {
 function showConfirmModal(title, message) {
   return new Promise((resolve) => {
     const overlay = document.getElementById('modal-overlay');
+    const dialog = overlay?.querySelector('.modal-dialog');
     const modalTitle = document.getElementById('modal-title');
-    const modalMessage = document.getElementById('modal-message');
+    const modalBody = document.querySelector('.modal-body');
     const confirmBtn = document.getElementById('modal-confirm');
     const cancelBtn = document.getElementById('modal-cancel');
     
-    if (!overlay) {
-      console.error('Modal overlay not found');
+    if (!overlay || !modalBody) {
+      console.error('Modal overlay or body not found');
       resolve(false);
       return;
     }
     
+    // Restore modal body structure if it was changed by showModal
+    let modalMessage = document.getElementById('modal-message');
+    if (!modalMessage) {
+      modalBody.innerHTML = '<p class="modal-message" id="modal-message"></p>';
+      modalMessage = document.getElementById('modal-message');
+    }
+    
+    // Remove logbook-modal class if present
+    dialog?.classList.remove('logbook-modal');
+    
     // Set content
     modalTitle.textContent = title;
     modalMessage.textContent = message;
+    
+    // Show both buttons for confirmation
+    confirmBtn.style.display = 'block';
+    cancelBtn.style.display = 'block';
+    confirmBtn.textContent = 'Confirm';
     
     // Show modal
     overlay.classList.add('active');

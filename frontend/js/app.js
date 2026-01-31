@@ -5,7 +5,7 @@
 let isPolling = false;
 let pollTimeout = null;
 let planesData = [];
-let totalDetectedPlanes = new Set(); // Track all planes ever detected (by ICAO24)
+let totalDetectedPlanes = new Set(); // Track all planes ever detected (by ICAO24) - persistent
 let fastestSpeed = 0; // Track fastest speed detected (persistent, km/h)
 
 /**
@@ -13,10 +13,19 @@ let fastestSpeed = 0; // Track fastest speed detected (persistent, km/h)
  */
 function loadPersistentStats() {
   try {
+    // Load fastest speed
     const savedSpeed = localStorage.getItem('fastestSpeed');
     if (savedSpeed) {
       fastestSpeed = parseInt(savedSpeed, 10);
       debug(`Loaded fastest speed from storage: ${fastestSpeed} km/h`);
+    }
+    
+    // Load total detected planes count
+    const savedPlanes = localStorage.getItem('totalDetectedPlanes');
+    if (savedPlanes) {
+      const planesArray = JSON.parse(savedPlanes);
+      totalDetectedPlanes = new Set(planesArray);
+      debug(`Loaded ${totalDetectedPlanes.size} aircraft from storage`);
     }
   } catch (e) {
     debug('Error loading persistent stats:', e);
@@ -31,6 +40,18 @@ function saveFastestSpeed() {
     localStorage.setItem('fastestSpeed', fastestSpeed.toString());
   } catch (e) {
     debug('Error saving fastest speed:', e);
+  }
+}
+
+/**
+ * Save total detected planes to localStorage
+ */
+function saveTotalDetectedPlanes() {
+  try {
+    const planesArray = Array.from(totalDetectedPlanes);
+    localStorage.setItem('totalDetectedPlanes', JSON.stringify(planesArray));
+  } catch (e) {
+    debug('Error saving total detected planes:', e);
   }
 }
 
@@ -57,7 +78,14 @@ function processPlanes(data) {
     
     // Track total planes detected (cumulative) - ONLY within 12km circle
     if (plane.distance <= CONFIG.DETECTION_RADIUS_KM) {
+      const sizeBefore = totalDetectedPlanes.size;
       totalDetectedPlanes.add(plane.icao24);
+      
+      // If this is a NEW aircraft, save to storage
+      if (totalDetectedPlanes.size > sizeBefore) {
+        saveTotalDetectedPlanes();
+        debug(`✈️ New aircraft detected! Total: ${totalDetectedPlanes.size}`);
+      }
       
       // Track fastest speed ONLY within 12km circle (convert m/s to km/h)
       if (plane.velocity && plane.velocity > 0) {
