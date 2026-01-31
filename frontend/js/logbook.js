@@ -136,8 +136,8 @@ const Logbook = {
           e.altitude?.toFixed(2) || 'N/A',
           e.velocity?.toFixed(2) || 'N/A',
           e.distance?.toFixed(2) || 'N/A',
-          e.latitude?.toFixed(6) || 'N/A',
-          e.longitude?.toFixed(6) || 'N/A'
+          e.userLat?.toFixed(6) || 'N/A',
+          e.userLon?.toFixed(6) || 'N/A'
         ];
       });
       
