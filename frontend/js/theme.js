@@ -27,6 +27,11 @@ function toggleTheme() {
   const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
   applyTheme(newTheme);
   localStorage.setItem('theme-override', newTheme);
+
+  // Sync with settings-based theme system, if present
+  if (typeof window !== 'undefined' && window.Settings && typeof window.Settings === 'object') {
+    window.Settings.themeMode = 'manual';
+  }
   debug(`Theme manually toggled to: ${newTheme}`);
 }
 
