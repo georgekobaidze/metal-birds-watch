@@ -110,9 +110,16 @@ function populateWhatsNext() {
   const listEl = document.getElementById('roadmap-list');
   
   if (listEl) {
-    listEl.innerHTML = INFO_CONFIG.roadmap
-      .map(feature => `<li class="roadmap-item">${feature}</li>`)
-      .join('');
+    // Clear existing items
+    listEl.innerHTML = '';
+
+    // Safely create list items without using innerHTML for content
+    INFO_CONFIG.roadmap.forEach(feature => {
+      const li = document.createElement('li');
+      li.className = 'roadmap-item';
+      li.textContent = feature;
+      listEl.appendChild(li);
+    });
   }
 }
 
