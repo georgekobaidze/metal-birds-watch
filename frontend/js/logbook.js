@@ -17,7 +17,8 @@ const Logbook = {
     // Check if this plane already logged today
     const today = new Date().toDateString();
     const existing = entries.find(e => 
-      e.callsign === plane.callsign && 
+      e.callsign === plane.callsign &&
+      e.icao24 === plane.icao24 &&
       new Date(e.timestamp).toDateString() === today
     );
     
