@@ -1385,11 +1385,8 @@
 }
 
 /* Info section highlight animation */
-.info-section {
-  transition: all 0.5s ease;
-}
-
 .info-section.highlight {
+  transition: all 0.5s ease;
   background: rgba(0, 212, 255, 0.1);
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
