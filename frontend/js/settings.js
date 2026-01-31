@@ -166,12 +166,12 @@ function showSettings() {
             <span>Default theme</span>
             <div class="custom-select" data-id="set-theme-mode" data-value="${settings.themeMode}">
               <div class="custom-select-trigger">
-                <span>${settings.themeMode === 'auto' ? 'Auto (Time-based)' : settings.themeMode === 'dark' ? 'Always Dark' : 'Always Light'}</span>
+                <span>${settings.themeMode === 'auto' ? 'Auto (Time-based)' : settings.themeMode === 'dark' ? 'Dark' : 'Light'}</span>
               </div>
               <div class="custom-select-options">
                 <div class="custom-select-option ${settings.themeMode === 'auto' ? 'selected' : ''}" data-value="auto">Auto (Time-based)</div>
-                <div class="custom-select-option ${settings.themeMode === 'dark' ? 'selected' : ''}" data-value="dark">Always Dark</div>
-                <div class="custom-select-option ${settings.themeMode === 'light' ? 'selected' : ''}" data-value="light">Always Light</div>
+                <div class="custom-select-option ${settings.themeMode === 'dark' ? 'selected' : ''}" data-value="dark">Dark</div>
+                <div class="custom-select-option ${settings.themeMode === 'light' ? 'selected' : ''}" data-value="light">Light</div>
               </div>
             </div>
           </label>

@@ -981,4 +981,49 @@
   background: rgba(0, 212, 255, 0.1);
 }
 
+/* ============================================
+   USER LOCATION POPUP
+   ============================================ */
+
+.user-location-popup {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  text-align: center;
+  padding: var(--spacing-sm);
+}
+
+.user-location-popup .popup-icon {
+  font-size: 32px;
+  margin-bottom: var(--spacing-xs);
+  animation: pulse-icon 2s infinite;
+}
+
+@keyframes pulse-icon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.user-location-popup .popup-title {
+  font-family: var(--font-tech);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: 1px;
+}
+
+.user-location-popup .popup-coords {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.5px;
+}
+
 

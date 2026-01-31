@@ -144,7 +144,17 @@ function addUserMarker() {
     zIndexOffset: 1000
   }).addTo(map);
   
-  userMarker.bindPopup('<strong>You are here</strong>');
+  userMarker.bindPopup(`
+    <div class="user-location-popup">
+      <div class="popup-icon">📍</div>
+      <div class="popup-title">Your Location</div>
+      <div class="popup-coords">
+        ${userLocation.lat.toFixed(4)}°N, ${Math.abs(userLocation.lon).toFixed(4)}°W
+      </div>
+    </div>
+  `, {
+    closeButton: false
+  });
 }
 
 /**
