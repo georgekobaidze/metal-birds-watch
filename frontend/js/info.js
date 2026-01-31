@@ -78,15 +78,27 @@ function populateBuiltBy() {
   // Social links
   const socialEl = document.getElementById('info-social');
   if (socialEl) {
-    const links = INFO_CONFIG.social
-      .filter(s => s.url)
-      .map(s => `<a href="${s.url}" target="_blank" rel="noopener noreferrer" class="social-link" title="${s.name}">${s.name}</a>`)
-      .join('');
-    
-    if (links) {
-      socialEl.innerHTML = links;
+    // Clear any existing content
+    socialEl.innerHTML = '';
+
+    const socialsWithUrl = INFO_CONFIG.social.filter(s => s.url);
+
+    if (socialsWithUrl.length > 0) {
+      socialsWithUrl.forEach(s => {
+        const link = document.createElement('a');
+        link.href = s.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.className = 'social-link';
+        link.title = s.name;
+        link.textContent = s.name;
+        socialEl.appendChild(link);
+      });
     } else {
-      socialEl.innerHTML = '<p class="social-empty">No social links provided yet.</p>';
+      const emptyMsg = document.createElement('p');
+      emptyMsg.className = 'social-empty';
+      emptyMsg.textContent = 'No social links provided yet.';
+      socialEl.appendChild(emptyMsg);
     }
   }
 }
