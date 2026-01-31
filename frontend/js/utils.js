@@ -228,6 +228,9 @@ function showConfirmModal(title, message) {
   });
 }
 
+// Store current modal cleanup function to prevent memory leaks
+let currentModalCleanup = null;
+
 /**
  * Show flexible modal (for logbook, settings, etc.)
  * @param {string} title - Modal title
@@ -248,6 +251,12 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   if (!overlay) {
     console.error('Modal overlay not found');
     return;
+  }
+  
+  // Clean up previous modal listeners before setting up new ones
+  if (currentModalCleanup) {
+    currentModalCleanup();
+    currentModalCleanup = null;
   }
   
   // Set title
@@ -293,20 +302,24 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
     cleanup();
   };
   
-  // Cleanup listeners
-  const cleanup = () => {
-    confirmBtn.removeEventListener('click', handleConfirm);
-    cancelBtn.removeEventListener('click', handleCancel);
-    overlay.removeEventListener('click', handleOverlayClick);
-    dialog?.classList.remove('logbook-modal');
-  };
-  
   // Close on overlay click
   const handleOverlayClick = (e) => {
     if (e.target === overlay) {
       handleCancel();
     }
   };
+  
+  // Cleanup listeners
+  const cleanup = () => {
+    confirmBtn.removeEventListener('click', handleConfirm);
+    cancelBtn.removeEventListener('click', handleCancel);
+    overlay.removeEventListener('click', handleOverlayClick);
+    dialog?.classList.remove('logbook-modal');
+    currentModalCleanup = null;
+  };
+  
+  // Store cleanup function for next modal call
+  currentModalCleanup = cleanup;
   
   // Add listeners
   confirmBtn.addEventListener('click', handleConfirm);
