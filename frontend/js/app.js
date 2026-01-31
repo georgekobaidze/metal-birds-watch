@@ -343,6 +343,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Load persistent stats
   loadPersistentStats();
+  // Update stats UI with any loaded persistent values
+  if (typeof updateStatsDisplay === 'function') {
+    updateStatsDisplay();
+  }
   
   // Initialize notification system
   if (window.initNotifications) {
