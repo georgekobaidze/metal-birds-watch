@@ -3,6 +3,7 @@
    ============================================ */
 
 let currentTheme = 'dark';
+let manualOverride = false;
 
 /**
  * Determine theme based on current time
@@ -16,6 +17,22 @@ function getThemeForTime() {
     return 'dark';
   }
   return 'light';
+}
+
+/**
+ * Toggle theme manually
+ */
+function toggleTheme() {
+  manualOverride = true;
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(newTheme);
+  localStorage.setItem('theme-override', newTheme);
+
+  // Sync with settings-based theme system, if present
+  if (typeof window !== 'undefined' && window.Settings && typeof window.Settings === 'object') {
+    window.Settings.themeMode = 'manual';
+  }
+  debug(`Theme manually toggled to: ${newTheme}`);
 }
 
 /**
@@ -55,9 +72,11 @@ function applyTheme(theme) {
 function updateMapTiles(theme) {
   if (!window.map || !window.tileLayer) return;
   
-  const tileUrl = theme === 'dark'
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
-    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+  // Get tile URL from CSS variable
+  const tileUrl = getComputedStyle(document.documentElement)
+    .getPropertyValue('--map-tiles')
+    .trim()
+    .replace(/['"]/g, '');
   
   window.tileLayer.setUrl(tileUrl);
 }
@@ -68,7 +87,29 @@ function updateMapTiles(theme) {
 function initTheme() {
   // Apply initial theme without transition
   document.documentElement.classList.add('no-transition');
-  const theme = getThemeForTime();
+  
+  // Check if Settings system exists and has themeMode
+  let theme;
+  if (window.Settings) {
+    const themeMode = window.Settings.get('themeMode');
+    if (themeMode === 'dark') {
+      theme = 'dark';
+      manualOverride = true;
+    } else if (themeMode === 'light') {
+      theme = 'light';
+      manualOverride = true;
+    } else {
+      // auto mode
+      theme = getThemeForTime();
+      manualOverride = false;
+    }
+  } else {
+    // Fallback if Settings not loaded yet
+    const savedTheme = localStorage.getItem('theme-override');
+    theme = savedTheme || getThemeForTime();
+    manualOverride = !!savedTheme;
+  }
+  
   applyTheme(theme);
   
   // Re-enable transitions after a frame
@@ -78,11 +119,30 @@ function initTheme() {
     }, 50);
   });
   
-  // Check for theme changes every minute
+  // Add click handler to theme info
+  const themeInfo = document.getElementById('theme-info');
+  if (themeInfo) {
+    themeInfo.style.cursor = 'pointer';
+    themeInfo.addEventListener('click', toggleTheme);
+  }
+  
+  // Check for automatic theme changes every minute
   setInterval(() => {
-    const newTheme = getThemeForTime();
-    if (newTheme !== currentTheme) {
-      applyTheme(newTheme);
+    // Only auto-switch if themeMode is 'auto' (not dark/light)
+    if (window.Settings) {
+      const themeMode = window.Settings.get('themeMode');
+      if (themeMode === 'auto') {
+        const newTheme = getThemeForTime();
+        if (newTheme !== currentTheme) {
+          applyTheme(newTheme);
+        }
+      }
+    } else if (!manualOverride) {
+      // Fallback for old behavior
+      const newTheme = getThemeForTime();
+      if (newTheme !== currentTheme) {
+        applyTheme(newTheme);
+      }
     }
   }, 60000); // Check every minute
   
@@ -95,3 +155,7 @@ if (document.readyState === 'loading') {
 } else {
   initTheme();
 }
+
+// Expose functions globally for settings system
+window.applyTheme = applyTheme;
+window.getThemeForTime = getThemeForTime;

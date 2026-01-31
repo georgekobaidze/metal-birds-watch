@@ -159,20 +159,36 @@ function debug(message, data = null) {
 function showConfirmModal(title, message) {
   return new Promise((resolve) => {
     const overlay = document.getElementById('modal-overlay');
+    const dialog = overlay?.querySelector('.modal-dialog');
     const modalTitle = document.getElementById('modal-title');
-    const modalMessage = document.getElementById('modal-message');
+    const modalBody = document.querySelector('.modal-body');
     const confirmBtn = document.getElementById('modal-confirm');
     const cancelBtn = document.getElementById('modal-cancel');
     
-    if (!overlay) {
-      console.error('Modal overlay not found');
+    if (!overlay || !modalBody) {
+      console.error('Modal overlay or body not found');
       resolve(false);
       return;
     }
     
+    // Restore modal body structure if it was changed by showModal
+    let modalMessage = document.getElementById('modal-message');
+    if (!modalMessage) {
+      modalBody.innerHTML = '<p class="modal-message" id="modal-message"></p>';
+      modalMessage = document.getElementById('modal-message');
+    }
+    
+    // Remove logbook-modal class if present
+    dialog?.classList.remove('logbook-modal');
+    
     // Set content
     modalTitle.textContent = title;
     modalMessage.textContent = message;
+    
+    // Show both buttons for confirmation
+    confirmBtn.style.display = 'block';
+    cancelBtn.style.display = 'block';
+    confirmBtn.textContent = 'Confirm';
     
     // Show modal
     overlay.classList.add('active');
@@ -210,4 +226,105 @@ function showConfirmModal(title, message) {
     cancelBtn.addEventListener('click', handleCancel);
     overlay.addEventListener('click', handleOverlayClick);
   });
+}
+
+// Store current modal cleanup function to prevent memory leaks
+let currentModalCleanup = null;
+
+/**
+ * Show flexible modal (for logbook, settings, etc.)
+ * @param {string} title - Modal title
+ * @param {string} htmlContent - HTML content for modal body
+ * @param {Function|null} onConfirm - Callback for confirm button (null = no confirm button)
+ * @param {string} confirmText - Text for confirm button (default: 'OK')
+ * @param {boolean} showCancel - Show cancel button (default: false)
+ * @param {boolean} successButton - Make confirm button green (default: false)
+ */
+function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', showCancel = false, successButton = false) {
+  const overlay = document.getElementById('modal-overlay');
+  const dialog = overlay?.querySelector('.modal-dialog');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody = document.querySelector('.modal-body');
+  const confirmBtn = document.getElementById('modal-confirm');
+  const cancelBtn = document.getElementById('modal-cancel');
+  
+  if (!overlay) {
+    console.error('Modal overlay not found');
+    return;
+  }
+  
+  // Clean up previous modal listeners before setting up new ones
+  if (currentModalCleanup) {
+    currentModalCleanup();
+    currentModalCleanup = null;
+  }
+  
+  // Set title
+  modalTitle.textContent = title;
+  
+  // Set HTML content
+  modalBody.innerHTML = htmlContent;
+  
+  // Configure buttons
+  confirmBtn.textContent = confirmText;
+  confirmBtn.style.display = 'block';
+  cancelBtn.style.display = showCancel ? 'block' : 'none';
+  
+  // Apply success styling if needed
+  if (successButton) {
+    confirmBtn.classList.add('btn-success');
+  } else {
+    confirmBtn.classList.remove('btn-success');
+  }
+  
+  // Add logbook-modal class for wider modal if title contains "Logbook"
+  if (title.includes('Logbook')) {
+    dialog?.classList.add('logbook-modal');
+  } else {
+    dialog?.classList.remove('logbook-modal');
+  }
+  
+  // Show modal
+  overlay.classList.add('active');
+  
+  // Handle confirm
+  const handleConfirm = () => {
+    if (onConfirm) {
+      onConfirm();
+    }
+    overlay.classList.remove('active');
+    cleanup();
+  };
+  
+  // Handle cancel
+  const handleCancel = () => {
+    overlay.classList.remove('active');
+    cleanup();
+  };
+  
+  // Close on overlay click
+  const handleOverlayClick = (e) => {
+    if (e.target === overlay) {
+      handleCancel();
+    }
+  };
+  
+  // Cleanup listeners
+  const cleanup = () => {
+    confirmBtn.removeEventListener('click', handleConfirm);
+    cancelBtn.removeEventListener('click', handleCancel);
+    overlay.removeEventListener('click', handleOverlayClick);
+    dialog?.classList.remove('logbook-modal');
+    currentModalCleanup = null;
+  };
+  
+  // Store cleanup function for next modal call
+  currentModalCleanup = cleanup;
+  
+  // Add listeners
+  confirmBtn.addEventListener('click', handleConfirm);
+  if (showCancel) {
+    cancelBtn.addEventListener('click', handleCancel);
+  }
+  overlay.addEventListener('click', handleOverlayClick);
 }

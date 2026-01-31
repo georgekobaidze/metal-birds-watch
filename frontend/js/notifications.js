@@ -44,6 +44,11 @@ function unlockAudio() {
  * Play notification sound
  */
 function playNotificationSound() {
+  // Check settings
+  if (window.Settings && !window.Settings.get('soundEnabled')) {
+    return;
+  }
+  
   if (!CONFIG.ENABLE_SOUNDS || !notificationSound) {
     return;
   }
@@ -143,6 +148,11 @@ async function requestNotificationPermission() {
  * @param {number} distance - Distance in km
  */
 function sendBrowserNotification(plane, distance) {
+  // Check settings
+  if (window.Settings && !window.Settings.get('browserNotificationsEnabled')) {
+    return;
+  }
+  
   if (!CONFIG.ENABLE_BROWSER_NOTIFICATIONS || notificationPermission !== 'granted') {
     return;
   }
@@ -164,9 +174,25 @@ function sendBrowserNotification(plane, distance) {
   const callsign = plane.callsign?.trim() || plane.icao24;
   const country = plane.country || 'Unknown';
   const altitude = plane.geo_altitude || plane.baro_altitude || plane.altitude;
-  const altitudeText = altitude ? `${Math.round(altitude)}m` : 'Unknown';
   
-  const body = `${callsign} • ${country}\n${distance.toFixed(1)}km away • ${altitudeText} altitude`;
+  // Use conversion functions if available
+  let altitudeText = 'Unknown';
+  if (altitude) {
+    if (window.convertAltitude) {
+      const converted = window.convertAltitude(altitude);
+      altitudeText = `${converted.value}${converted.label}`;
+    } else {
+      altitudeText = `${Math.round(altitude)}m`;
+    }
+  }
+  
+  let distanceText = `${distance.toFixed(1)}km`;
+  if (window.convertDistance) {
+    const converted = window.convertDistance(distance);
+    distanceText = `${converted.value}${converted.label}`;
+  }
+  
+  const body = `${callsign} • ${country}\n${distanceText} away • ${altitudeText} altitude`;
   
   try {
     const notification = new Notification(title, {
@@ -245,6 +271,18 @@ function checkAndNotifyPlanes(planes) {
       
       // Add to in-app notification center
       addInAppNotification(plane, plane.distance);
+      
+      // Add to logbook
+      if (window.Logbook && window.userLocation) {
+        const added = window.Logbook.add(plane, window.userLocation);
+        debug(`Logbook add result for ${plane.callsign}: ${added}`);
+      } else {
+        debug('Logbook or userLocation not available', { 
+          hasLogbook: !!window.Logbook, 
+          hasLocation: !!window.userLocation,
+          location: window.userLocation 
+        });
+      }
       
       // Mark as notified
       notifiedPlanes.add(plane.icao24);
@@ -352,7 +390,15 @@ function updateNotificationDropdown() {
     
     const meta = document.createElement('div');
     meta.className = 'notification-meta';
-    meta.textContent = `${notification.distance.toFixed(1)}km away • ${timeAgo}`;
+    
+    // Use conversion function if available
+    let distanceText = `${notification.distance.toFixed(1)}km`;
+    if (window.convertDistance) {
+      const converted = window.convertDistance(notification.distance);
+      distanceText = `${converted.value}${converted.label}`;
+    }
+    
+    meta.textContent = `${distanceText} away • ${timeAgo}`;
     
     content.appendChild(title);
     content.appendChild(meta);
@@ -441,4 +487,16 @@ function clearAllNotifications() {
   saveNotifications();
   updateNotificationUI();
   debug('All notifications cleared');
+}
+
+/**
+ * Mark all notifications as read
+ */
+function markAllNotificationsRead() {
+  notificationHistory.forEach(notification => {
+    notification.read = true;
+  });
+  saveNotifications();
+  updateNotificationUI();
+  debug('All notifications marked as read');
 }

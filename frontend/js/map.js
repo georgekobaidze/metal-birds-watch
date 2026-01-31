@@ -9,6 +9,13 @@ let userLocation = { lat: null, lon: null };
 let radiusCircle = null;
 let planeMarkers = new Map(); // ICAO24 -> marker
 
+// Expose userLocation globally for other modules via a getter
+Object.defineProperty(window, 'userLocation', {
+  get() {
+    return userLocation;
+  }
+});
+
 /**
  * Initialize the Leaflet map
  */
@@ -22,10 +29,11 @@ function initMap() {
     maxZoom: CONFIG.MAP_ZOOM_MAX
   });
   
-  // Add tile layer based on current theme
-  const tileUrl = currentTheme === 'dark'
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
-    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+  // Add tile layer from CSS variable
+  const tileUrl = getComputedStyle(document.documentElement)
+    .getPropertyValue('--map-tiles')
+    .trim()
+    .replace(/['"]/g, '');
   
   tileLayer = L.tileLayer(tileUrl, {
     attribution: '© OpenStreetMap contributors © CARTO',
@@ -48,12 +56,12 @@ function getUserLocation() {
   // TODO: REMOVE THIS BEFORE PRODUCTION!
   // ============================================
   
-  // Hardcoded to Thousand Oaks, CA
-  // Near LA but not at airport - moderate flight traffic (overflights)
-  userLocation.lat = 34.1705;
-  userLocation.lon = -118.8376;
+  // Hardcoded to Los Angeles, California
+  // Major city with significant airport traffic (LAX)
+  userLocation.lat = 34.0522;
+  userLocation.lon = -118.2437;
   
-  debug('🧪 TESTING MODE: Using hardcoded Thousand Oaks, CA location', userLocation);
+  debug('🧪 TESTING MODE: Using hardcoded Los Angeles, CA location', userLocation);
   
   // Update map
   map.setView([userLocation.lat, userLocation.lon], CONFIG.MAP_ZOOM_DEFAULT);
@@ -265,10 +273,40 @@ function updatePlaneMarkers(planes) {
 function createPlanePopupContent(plane) {
   const callsign = plane.callsign || 'Unknown';
   const country = plane.country || 'Unknown';
-  const altitude = plane.altitude ? `${Math.round(plane.altitude)}m` : 'N/A';
-  const speed = plane.velocity ? `${Math.round(plane.velocity * 3.6)} km/h` : 'N/A';
+  
+  // Use conversion functions if available, otherwise fallback
+  let altitude = 'N/A';
+  if (plane.altitude) {
+    if (window.convertAltitude) {
+      const converted = window.convertAltitude(plane.altitude);
+      altitude = `${converted.value.toLocaleString()}${converted.label}`;
+    } else {
+      altitude = `${Math.round(plane.altitude)}m`;
+    }
+  }
+  
+  let speed = 'N/A';
+  if (plane.velocity) {
+    const speedKmh = plane.velocity * 3.6;
+    if (window.convertSpeed) {
+      const converted = window.convertSpeed(speedKmh);
+      speed = converted.text;
+    } else {
+      speed = `${Math.round(speedKmh)} km/h`;
+    }
+  }
+  
   const heading = plane.heading ? `${Math.round(plane.heading)}°` : 'N/A';
-  const distance = formatDistance(plane.distance);
+  
+  let distance = 'N/A';
+  if (plane.distance !== undefined) {
+    if (window.convertDistance) {
+      const converted = window.convertDistance(plane.distance);
+      distance = `${converted.value}${converted.label}`;
+    } else {
+      distance = formatDistance(plane.distance);
+    }
+  }
   
   return `
     <div class="plane-popup">

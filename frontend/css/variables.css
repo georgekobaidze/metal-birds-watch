@@ -62,15 +62,15 @@
    ============================================ */
 [data-theme="light"] {
   /* Backgrounds */
-  --bg-primary: #f0f4f8;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #e2e8f0;
-  --bg-glass: rgba(255, 255, 255, 0.8);
-  --bg-glass-heavy: rgba(255, 255, 255, 0.95);
+  --bg-primary: #121820;
+  --bg-secondary: #1a202c;
+  --bg-tertiary: #0f1419;
+  --bg-glass: rgba(26, 32, 44, 0.85);
+  --bg-glass-heavy: rgba(26, 32, 44, 0.96);
   
   /* Text */
-  --text-primary: #1a202c;
-  --text-secondary: #4a5568;
+  --text-primary: #e2e8f0;
+  --text-secondary: #a0aec0;
   --text-muted: #718096;
   
   /* Borders */
@@ -83,7 +83,7 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
   
   /* Map tile URL */
-  --map-tiles: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+  --map-tiles: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
   
   /* Theme-specific */
   --theme-icon: '☀️';
