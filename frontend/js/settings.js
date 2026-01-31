@@ -313,14 +313,21 @@ window.convertAltitude = convertAltitude;
 window.convertDistance = convertDistance;
 window.showSettings = showSettings;
 
+// Track if document-level click handler has been initialized
+let dropdownClickHandlerInitialized = false;
+
 // Initialize custom dropdowns after modal is shown
 function initializeCustomDropdowns() {
   document.querySelectorAll('.custom-select').forEach(select => {
     const trigger = select.querySelector('.custom-select-trigger');
     const options = select.querySelectorAll('.custom-select-option');
     
+    // Remove existing listeners by cloning and replacing elements
+    const newTrigger = trigger.cloneNode(true);
+    trigger.parentNode.replaceChild(newTrigger, trigger);
+    
     // Toggle dropdown
-    trigger.addEventListener('click', (e) => {
+    newTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
       // Close all other dropdowns
       document.querySelectorAll('.custom-select.open').forEach(other => {
@@ -331,18 +338,22 @@ function initializeCustomDropdowns() {
     
     // Select option
     options.forEach(option => {
-      option.addEventListener('click', (e) => {
+      // Clone and replace to remove old listeners
+      const newOption = option.cloneNode(true);
+      option.parentNode.replaceChild(newOption, option);
+      
+      newOption.addEventListener('click', (e) => {
         e.stopPropagation();
-        const value = option.dataset.value;
-        const text = option.textContent;
+        const value = newOption.dataset.value;
+        const text = newOption.textContent;
         
         // Update UI
-        trigger.querySelector('span').textContent = text;
+        newTrigger.querySelector('span').textContent = text;
         select.dataset.value = value;
         
         // Update selected state
-        options.forEach(opt => opt.classList.remove('selected'));
-        option.classList.add('selected');
+        select.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+        newOption.classList.add('selected');
         
         // Close dropdown
         select.classList.remove('open');
@@ -350,11 +361,14 @@ function initializeCustomDropdowns() {
     });
   });
   
-  // Close dropdowns when clicking outside
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.custom-select.open').forEach(select => {
-      select.classList.remove('open');
+  // Add document-level click handler only once
+  if (!dropdownClickHandlerInitialized) {
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.custom-select.open').forEach(select => {
+        select.classList.remove('open');
+      });
     });
-  });
+    dropdownClickHandlerInitialized = true;
+  }
 }
 
