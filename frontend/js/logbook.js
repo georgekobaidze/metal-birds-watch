@@ -37,6 +37,8 @@ const Logbook = {
       heading: plane.heading,
       origin: plane.country || 'Unknown',
       distance: plane.distance,
+      planeLat: plane.latitude,
+      planeLon: plane.longitude,
       userLat: userLocation.lat,
       userLon: userLocation.lon
     };
