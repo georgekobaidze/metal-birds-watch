@@ -488,3 +488,15 @@ function clearAllNotifications() {
   updateNotificationUI();
   debug('All notifications cleared');
 }
+
+/**
+ * Mark all notifications as read
+ */
+function markAllNotificationsRead() {
+  notificationHistory.forEach(notification => {
+    notification.read = true;
+  });
+  saveNotifications();
+  updateNotificationUI();
+  debug('All notifications marked as read');
+}

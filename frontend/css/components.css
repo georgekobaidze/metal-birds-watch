@@ -232,10 +232,32 @@
   border-top: 1px solid var(--border-color);
   background: rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.mark-read-btn {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--neon-cyan);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mark-read-btn:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--neon-cyan);
+  transform: translateY(-1px);
 }
 
 .clear-all-btn {
-  width: 100%;
+  flex: 1;
   padding: var(--spacing-sm) var(--spacing-md);
   background: rgba(255, 0, 110, 0.1);
   border: 1px solid rgba(255, 0, 110, 0.3);

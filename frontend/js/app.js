@@ -384,6 +384,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
+  // Setup mark all as read button
+  const markReadBtn = document.getElementById('mark-all-read-btn');
+  if (markReadBtn) {
+    markReadBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      markAllNotificationsRead();
+    });
+  }
+  
   // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
     const dropdown = document.getElementById('notification-dropdown');
