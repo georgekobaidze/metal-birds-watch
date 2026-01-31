@@ -9,8 +9,12 @@ let userLocation = { lat: null, lon: null };
 let radiusCircle = null;
 let planeMarkers = new Map(); // ICAO24 -> marker
 
-// Expose userLocation globally for other modules
-window.userLocation = userLocation;
+// Expose userLocation globally for other modules via a getter
+Object.defineProperty(window, 'userLocation', {
+  get() {
+    return userLocation;
+  }
+});
 
 /**
  * Initialize the Leaflet map
