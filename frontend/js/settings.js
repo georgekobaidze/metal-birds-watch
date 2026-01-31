@@ -259,58 +259,9 @@ function handleResetStats(e) {
 }
 
 // Handle export logbook
-function handleExportLogbook(format) {
-  const entries = window.Logbook ? window.Logbook.getAll() : [];
-  
-  if (entries.length === 0) {
-    showToast('Logbook is empty', 'info');
-    return;
-  }
-  
-  let content, filename, mimeType;
-  
-  if (format === 'csv') {
-    const headers = ['Date', 'Time', 'Callsign', 'ICAO24', 'Origin', 'Altitude (m)', 'Speed (m/s)', 'Distance (km)', 'Latitude', 'Longitude'];
-    const rows = entries.map(e => {
-      const date = new Date(e.timestamp);
-      return [
-        date.toLocaleDateString(),
-        date.toLocaleTimeString(),
-        e.callsign,
-        e.icao24,
-        e.origin || 'Unknown',
-        e.altitude?.toFixed(2) || 'N/A',
-        e.velocity?.toFixed(2) || 'N/A',
-        e.distance?.toFixed(2) || 'N/A',
-        e.latitude?.toFixed(6) || 'N/A',
-        e.longitude?.toFixed(6) || 'N/A'
-      ];
-    });
-    
-    content = [headers, ...rows]
-      .map(row => row.map(cell => `"${cell}"`).join(','))
-      .join('\n');
-    
-    filename = `metal-birds-logbook-${new Date().toISOString().split('T')[0]}.csv`;
-    mimeType = 'text/csv';
-  } else {
-    content = JSON.stringify(entries, null, 2);
-    filename = `metal-birds-logbook-${new Date().toISOString().split('T')[0]}.json`;
-    mimeType = 'application/json';
-  }
-  
-  const blob = new Blob([content], { type: mimeType });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  
-  showToast(`Exported ${entries.length} flights`, 'success');
-}
+// Note: Logbook export functionality is handled by Logbook.exportLogbook()
+// in the dedicated logbook module. The previous handleExportLogbook
+// implementation here was duplicate and unused.
 
 // Apply theme mode
 function applyThemeMode(mode) {
