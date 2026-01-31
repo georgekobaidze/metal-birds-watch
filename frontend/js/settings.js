@@ -196,15 +196,13 @@ function showSettings() {
     saveSettingsFromModal();
   }, 'Save', true, true); // Last parameter: successButton = true (green button)
   
-  // Add button handlers after modal is shown
-  setTimeout(() => {
-    const btnReset = document.getElementById('btn-reset-stats');
-    
-    if (btnReset) btnReset.addEventListener('click', handleResetStats);
-    
-    // Initialize custom dropdowns
-    initializeCustomDropdowns();
-  }, 100);
+  // Attach button handlers and initialize custom dropdowns immediately after modal is shown
+  const btnReset = document.getElementById('btn-reset-stats');
+  
+  if (btnReset) btnReset.addEventListener('click', handleResetStats);
+  
+  // Initialize custom dropdowns
+  initializeCustomDropdowns();
 }
 
 // Save settings from modal form
