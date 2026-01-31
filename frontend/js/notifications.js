@@ -246,6 +246,18 @@ function checkAndNotifyPlanes(planes) {
       // Add to in-app notification center
       addInAppNotification(plane, plane.distance);
       
+      // Add to logbook
+      if (window.Logbook && window.userLocation) {
+        const added = window.Logbook.add(plane, window.userLocation);
+        debug(`Logbook add result for ${plane.callsign}: ${added}`);
+      } else {
+        debug('Logbook or userLocation not available', { 
+          hasLogbook: !!window.Logbook, 
+          hasLocation: !!window.userLocation,
+          location: window.userLocation 
+        });
+      }
+      
       // Mark as notified
       notifiedPlanes.add(plane.icao24);
       

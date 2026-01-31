@@ -491,3 +491,124 @@
   box-shadow: 0 0 10px rgba(255, 0, 110, 0.8);
 }
 
+/* ============================================
+   LOGBOOK STYLES
+   ============================================ */
+
+.logbook-content {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.logbook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: rgba(0, 212, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logbook-stats {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.logbook-clear-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: rgba(255, 0, 110, 0.1);
+  border: 1px solid rgba(255, 0, 110, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--color-close);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logbook-clear-btn:hover {
+  background: rgba(255, 0, 110, 0.2);
+  border-color: var(--color-close);
+  transform: translateY(-1px);
+}
+
+.logbook-empty {
+  padding: var(--spacing-2xl);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+}
+
+.logbook-date {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-family: var(--font-tech);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--neon-cyan);
+  letter-spacing: 1px;
+  position: sticky;
+  top: 57px;
+  z-index: 9;
+}
+
+.logbook-entry {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+}
+
+.logbook-entry:hover {
+  background: rgba(0, 212, 255, 0.05);
+}
+
+.logbook-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.logbook-callsign {
+  font-family: var(--font-tech);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--neon-green);
+  text-shadow: 0 0 10px rgba(124, 252, 0, 0.5);
+}
+
+.logbook-time {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.logbook-entry-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.logbook-entry-details span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px var(--spacing-xs);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+}
+
+/* Wide modal for logbook */
+.modal-dialog.logbook-modal {
+  max-width: 500px;
+}
+
+

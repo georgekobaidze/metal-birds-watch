@@ -6,7 +6,33 @@ let isPolling = false;
 let pollTimeout = null;
 let planesData = [];
 let totalDetectedPlanes = new Set(); // Track all planes ever detected (by ICAO24)
-let fastestSpeed = 0; // Track fastest speed detected in session (km/h)
+let fastestSpeed = 0; // Track fastest speed detected (persistent, km/h)
+
+/**
+ * Load persistent stats from localStorage
+ */
+function loadPersistentStats() {
+  try {
+    const savedSpeed = localStorage.getItem('fastestSpeed');
+    if (savedSpeed) {
+      fastestSpeed = parseInt(savedSpeed, 10);
+      debug(`Loaded fastest speed from storage: ${fastestSpeed} km/h`);
+    }
+  } catch (e) {
+    debug('Error loading persistent stats:', e);
+  }
+}
+
+/**
+ * Save fastest speed to localStorage
+ */
+function saveFastestSpeed() {
+  try {
+    localStorage.setItem('fastestSpeed', fastestSpeed.toString());
+  } catch (e) {
+    debug('Error saving fastest speed:', e);
+  }
+}
 
 /**
  * Process planes data from API
@@ -32,13 +58,15 @@ function processPlanes(data) {
     // Track total planes detected (cumulative) - ONLY within 12km circle
     if (plane.distance <= CONFIG.DETECTION_RADIUS_KM) {
       totalDetectedPlanes.add(plane.icao24);
-    }
-    
-    // Track fastest speed (convert m/s to km/h)
-    if (plane.velocity && plane.velocity > 0) {
-      const speedKmh = Math.round(plane.velocity * 3.6);
-      if (speedKmh > fastestSpeed) {
-        fastestSpeed = speedKmh;
+      
+      // Track fastest speed ONLY within 12km circle (convert m/s to km/h)
+      if (plane.velocity && plane.velocity > 0) {
+        const speedKmh = Math.round(plane.velocity * 3.6);
+        if (speedKmh > fastestSpeed) {
+          fastestSpeed = speedKmh;
+          saveFastestSpeed(); // Persist the new record
+          debug(`🏆 New speed record: ${fastestSpeed} km/h`);
+        }
       }
     }
   });
@@ -119,9 +147,10 @@ function updateStats(data) {
     activityElement.classList.add(`activity-${activity.level}`);
   }
   
-  // Update closest distance
-  if (planesData.length > 0) {
-    updateText('closest-distance', formatDistance(planesData[0].distance));
+  // Update closest distance - ONLY planes within 12km radius
+  const planesWithinRadius = planesData.filter(p => p.distance <= CONFIG.DETECTION_RADIUS_KM);
+  if (planesWithinRadius.length > 0) {
+    updateText('closest-distance', formatDistance(planesWithinRadius[0].distance));
   } else {
     updateText('closest-distance', '--');
   }
@@ -211,6 +240,9 @@ function hideLoadingScreen() {
 document.addEventListener('DOMContentLoaded', () => {
   debug('Metal Birds Watch initialized');
   debug('Backend API:', CONFIG.API_URL);
+  
+  // Load persistent stats
+  loadPersistentStats();
   
   // Initialize notification system
   if (window.initNotifications) {

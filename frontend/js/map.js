@@ -9,6 +9,9 @@ let userLocation = { lat: null, lon: null };
 let radiusCircle = null;
 let planeMarkers = new Map(); // ICAO24 -> marker
 
+// Expose userLocation globally for other modules
+window.userLocation = userLocation;
+
 /**
  * Initialize the Leaflet map
  */
@@ -49,12 +52,12 @@ function getUserLocation() {
   // TODO: REMOVE THIS BEFORE PRODUCTION!
   // ============================================
   
-  // Hardcoded to Thousand Oaks, CA
-  // Near LA but not at airport - moderate flight traffic (overflights)
-  userLocation.lat = 34.1705;
-  userLocation.lon = -118.8376;
+  // Hardcoded to Los Angeles, California
+  // Major city with significant airport traffic (LAX)
+  userLocation.lat = 34.0522;
+  userLocation.lon = -118.2437;
   
-  debug('🧪 TESTING MODE: Using hardcoded Thousand Oaks, CA location', userLocation);
+  debug('🧪 TESTING MODE: Using hardcoded Los Angeles, CA location', userLocation);
   
   // Update map
   map.setView([userLocation.lat, userLocation.lon], CONFIG.MAP_ZOOM_DEFAULT);
