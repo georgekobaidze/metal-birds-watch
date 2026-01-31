@@ -22,10 +22,11 @@ function initMap() {
     maxZoom: CONFIG.MAP_ZOOM_MAX
   });
   
-  // Add tile layer based on current theme
-  const tileUrl = currentTheme === 'dark'
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
-    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+  // Add tile layer from CSS variable
+  const tileUrl = getComputedStyle(document.documentElement)
+    .getPropertyValue('--map-tiles')
+    .trim()
+    .replace(/['"]/g, '');
   
   tileLayer = L.tileLayer(tileUrl, {
     attribution: '© OpenStreetMap contributors © CARTO',

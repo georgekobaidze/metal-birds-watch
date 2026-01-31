@@ -3,6 +3,7 @@
    ============================================ */
 
 let currentTheme = 'dark';
+let manualOverride = false;
 
 /**
  * Determine theme based on current time
@@ -16,6 +17,17 @@ function getThemeForTime() {
     return 'dark';
   }
   return 'light';
+}
+
+/**
+ * Toggle theme manually
+ */
+function toggleTheme() {
+  manualOverride = true;
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(newTheme);
+  localStorage.setItem('theme-override', newTheme);
+  debug(`Theme manually toggled to: ${newTheme}`);
 }
 
 /**
@@ -55,9 +67,11 @@ function applyTheme(theme) {
 function updateMapTiles(theme) {
   if (!window.map || !window.tileLayer) return;
   
-  const tileUrl = theme === 'dark'
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
-    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png';
+  // Get tile URL from CSS variable
+  const tileUrl = getComputedStyle(document.documentElement)
+    .getPropertyValue('--map-tiles')
+    .trim()
+    .replace(/['"]/g, '');
   
   window.tileLayer.setUrl(tileUrl);
 }
@@ -68,7 +82,16 @@ function updateMapTiles(theme) {
 function initTheme() {
   // Apply initial theme without transition
   document.documentElement.classList.add('no-transition');
-  const theme = getThemeForTime();
+  
+  // Check for manual override in localStorage
+  const savedTheme = localStorage.getItem('theme-override');
+  let theme;
+  if (savedTheme) {
+    theme = savedTheme;
+    manualOverride = true;
+  } else {
+    theme = getThemeForTime();
+  }
   applyTheme(theme);
   
   // Re-enable transitions after a frame
@@ -78,11 +101,20 @@ function initTheme() {
     }, 50);
   });
   
-  // Check for theme changes every minute
+  // Add click handler to theme info
+  const themeInfo = document.getElementById('theme-info');
+  if (themeInfo) {
+    themeInfo.style.cursor = 'pointer';
+    themeInfo.addEventListener('click', toggleTheme);
+  }
+  
+  // Check for automatic theme changes every minute (only if no manual override)
   setInterval(() => {
-    const newTheme = getThemeForTime();
-    if (newTheme !== currentTheme) {
-      applyTheme(newTheme);
+    if (!manualOverride) {
+      const newTheme = getThemeForTime();
+      if (newTheme !== currentTheme) {
+        applyTheme(newTheme);
+      }
     }
   }, 60000); // Check every minute
   
