@@ -539,11 +539,11 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-md);
-  background: rgba(0, 212, 255, 0.05);
+  background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 11;
 }
 
 .logbook-stats {
@@ -611,8 +611,8 @@
   color: var(--neon-cyan);
   letter-spacing: 1px;
   position: sticky;
-  top: 57px;
-  z-index: 9;
+  top: 0;
+  z-index: 10;
 }
 
 .logbook-entry {
