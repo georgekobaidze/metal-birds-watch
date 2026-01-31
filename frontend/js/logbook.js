@@ -103,6 +103,69 @@ const Logbook = {
   },
   
   /**
+   * Export logbook to JSON or CSV
+   * @param {string} format - 'json' or 'csv'
+   */
+  exportLogbook(format) {
+    const entries = this.getAll();
+    
+    if (entries.length === 0) {
+      if (window.showToast) {
+        showToast('Logbook is empty', 'info');
+      } else {
+        alert('Logbook is empty');
+      }
+      return;
+    }
+    
+    let content, filename, mimeType;
+    
+    if (format === 'csv') {
+      const headers = ['Date', 'Time', 'Callsign', 'ICAO24', 'Origin', 'Altitude (m)', 'Speed (m/s)', 'Distance (km)', 'Latitude', 'Longitude'];
+      const rows = entries.map(e => {
+        const date = new Date(e.timestamp);
+        return [
+          date.toLocaleDateString(),
+          date.toLocaleTimeString(),
+          e.callsign,
+          e.icao24,
+          e.origin || 'Unknown',
+          e.altitude?.toFixed(2) || 'N/A',
+          e.velocity?.toFixed(2) || 'N/A',
+          e.distance?.toFixed(2) || 'N/A',
+          e.latitude?.toFixed(6) || 'N/A',
+          e.longitude?.toFixed(6) || 'N/A'
+        ];
+      });
+      
+      content = [headers, ...rows]
+        .map(row => row.map(cell => `"${cell}"`).join(','))
+        .join('\n');
+      
+      filename = `metal-birds-logbook-${new Date().toISOString().split('T')[0]}.csv`;
+      mimeType = 'text/csv';
+    } else {
+      content = JSON.stringify(entries, null, 2);
+      filename = `metal-birds-logbook-${new Date().toISOString().split('T')[0]}.json`;
+      mimeType = 'application/json';
+    }
+    
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    if (window.showToast) {
+      showToast(`Exported ${entries.length} flights`, 'success');
+    }
+  },
+  
+  /**
    * Clear entries older than X days
    * @param {number} days - Days to keep
    */
@@ -153,10 +216,14 @@ function showLogbook() {
   if (entries.length === 0) {
     html += '<div class="logbook-empty">No planes spotted yet. Keep watching the skies! ✈️</div>';
   } else {
-    // Add clear button
+    // Add header with export and clear buttons
     html += '<div class="logbook-header">';
     html += `<div class="logbook-stats">${entries.length} total flights</div>`;
+    html += '<div class="logbook-actions">';
+    html += '<button class="logbook-export-btn" onclick="Logbook.exportLogbook(\'json\')">Export JSON</button>';
+    html += '<button class="logbook-export-btn" onclick="Logbook.exportLogbook(\'csv\')">Export CSV</button>';
     html += '<button class="logbook-clear-btn" onclick="clearLogbook()">Clear All</button>';
+    html += '</div>';
     html += '</div>';
     
     // Add entries by date
@@ -176,9 +243,39 @@ function showLogbook() {
           hour: '2-digit', 
           minute: '2-digit' 
         });
-        const altFt = Math.round(entry.altitude * 3.28084);
-        const speedKmh = Math.round(entry.velocity * 3.6);
-        const distKm = entry.distance?.toFixed(1) || '?';
+        
+        // Use conversion functions if available
+        let altitude = 'N/A';
+        if (entry.altitude) {
+          if (window.convertAltitude) {
+            const converted = window.convertAltitude(entry.altitude);
+            altitude = `${converted.value.toLocaleString()}${converted.label}`;
+          } else {
+            const altFt = Math.round(entry.altitude * 3.28084);
+            altitude = `${altFt.toLocaleString()}ft`;
+          }
+        }
+        
+        let speed = 'N/A';
+        if (entry.velocity) {
+          const speedKmh = entry.velocity * 3.6;
+          if (window.convertSpeed) {
+            const converted = window.convertSpeed(speedKmh);
+            speed = converted.text;
+          } else {
+            speed = `${Math.round(speedKmh)}km/h`;
+          }
+        }
+        
+        let distance = '?';
+        if (entry.distance !== undefined) {
+          if (window.convertDistance) {
+            const converted = window.convertDistance(entry.distance);
+            distance = `${converted.value}${converted.label}`;
+          } else {
+            distance = `${entry.distance.toFixed(1)}km`;
+          }
+        }
         
         html += `
           <div class="logbook-entry">
@@ -187,9 +284,9 @@ function showLogbook() {
               <span class="logbook-time">${time}</span>
             </div>
             <div class="logbook-entry-details">
-              <span title="Altitude">🔺 ${altFt.toLocaleString()}ft</span>
-              <span title="Speed">💨 ${speedKmh}km/h</span>
-              <span title="Distance">${distKm}km away</span>
+              <span title="Altitude">🔺 ${altitude}</span>
+              <span title="Speed">💨 ${speed}</span>
+              <span title="Distance">${distance} away</span>
               <span title="Origin">${entry.origin || 'Unknown'}</span>
             </div>
           </div>

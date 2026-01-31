@@ -7,6 +7,7 @@ let pollTimeout = null;
 let planesData = [];
 let totalDetectedPlanes = new Set(); // Track all planes ever detected (by ICAO24) - persistent
 let fastestSpeed = 0; // Track fastest speed detected (persistent, km/h)
+let closestDistance = null; // Track closest distance ever detected (persistent, km)
 
 /**
  * Load persistent stats from localStorage
@@ -26,6 +27,13 @@ function loadPersistentStats() {
       const planesArray = JSON.parse(savedPlanes);
       totalDetectedPlanes = new Set(planesArray);
       debug(`Loaded ${totalDetectedPlanes.size} aircraft from storage`);
+    }
+    
+    // Load closest distance
+    const savedDistance = localStorage.getItem('closestDistance');
+    if (savedDistance) {
+      closestDistance = parseFloat(savedDistance);
+      debug(`Loaded closest distance from storage: ${closestDistance} km`);
     }
   } catch (e) {
     debug('Error loading persistent stats:', e);
@@ -52,6 +60,45 @@ function saveTotalDetectedPlanes() {
     localStorage.setItem('totalDetectedPlanes', JSON.stringify(planesArray));
   } catch (e) {
     debug('Error saving total detected planes:', e);
+  }
+}
+
+/**
+ * Save closest distance to localStorage
+ */
+function saveClosestDistance() {
+  try {
+    localStorage.setItem('closestDistance', closestDistance.toString());
+  } catch (e) {
+    debug('Error saving closest distance:', e);
+  }
+}
+
+/**
+ * Reset statistics (Aircraft Spotted, Fastest Spotted, Closest Plane)
+ * Does NOT reset user preferences/settings
+ */
+function resetStatistics() {
+  try {
+    // Reset statistics ONLY
+    fastestSpeed = 0;
+    totalDetectedPlanes = new Set();
+    closestDistance = null;
+    
+    // Clear from localStorage
+    localStorage.removeItem('fastestSpeed');
+    localStorage.removeItem('totalDetectedPlanes');
+    localStorage.removeItem('closestDistance');
+    
+    // Update UI immediately (just the unit-dependent stats)
+    updateStatsDisplay();
+    
+    // Also update total detected count
+    updateText('total-detected', 0);
+    
+    debug('Statistics reset successfully');
+  } catch (e) {
+    debug('Error resetting statistics:', e);
   }
 }
 
@@ -95,6 +142,13 @@ function processPlanes(data) {
           saveFastestSpeed(); // Persist the new record
           debug(`🏆 New speed record: ${fastestSpeed} km/h`);
         }
+      }
+      
+      // Track closest distance ONLY within 12km circle
+      if (closestDistance === null || plane.distance < closestDistance) {
+        closestDistance = plane.distance;
+        saveClosestDistance();
+        debug(`📍 New closest distance: ${closestDistance.toFixed(2)} km`);
       }
     }
   });
@@ -175,23 +229,41 @@ function updateStats(data) {
     activityElement.classList.add(`activity-${activity.level}`);
   }
   
-  // Update closest distance - ONLY planes within 12km radius
-  const planesWithinRadius = planesData.filter(p => p.distance <= CONFIG.DETECTION_RADIUS_KM);
-  if (planesWithinRadius.length > 0) {
-    updateText('closest-distance', formatDistance(planesWithinRadius[0].distance));
+  // Update unit-dependent stats
+  updateStatsDisplay();
+  
+  // Update connection status
+  updateConnectionStatus(true);
+}
+
+/**
+ * Update only the unit-dependent stats display (called when units change)
+ */
+function updateStatsDisplay() {
+  // Update closest distance - show the persistent closest ever detected
+  if (closestDistance !== null) {
+    // Use conversion function if available
+    if (window.convertDistance) {
+      const converted = window.convertDistance(closestDistance);
+      updateText('closest-distance', `${converted.value}${converted.label}`);
+    } else {
+      updateText('closest-distance', formatDistance(closestDistance));
+    }
   } else {
     updateText('closest-distance', '--');
   }
   
-  // Update fastest speed
+  // Update fastest speed with unit conversion
   if (fastestSpeed > 0) {
-    updateText('fastest-speed', `${fastestSpeed} km/h`);
+    if (window.convertSpeed) {
+      const converted = window.convertSpeed(fastestSpeed);
+      updateText('fastest-speed', converted.text);
+    } else {
+      updateText('fastest-speed', `${fastestSpeed} km/h`);
+    }
   } else {
     updateText('fastest-speed', '--');
   }
-  
-  // Update connection status
-  updateConnectionStatus(true);
 }
 
 /**
@@ -328,3 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Make startPolling available globally
 window.startPolling = startPolling;
+window.resetStatistics = resetStatistics;
+window.updateStats = updateStats;
+window.updateStatsDisplay = updateStatsDisplay;

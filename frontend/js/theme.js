@@ -83,15 +83,33 @@ function initTheme() {
   // Apply initial theme without transition
   document.documentElement.classList.add('no-transition');
   
-  // Check for manual override in localStorage
-  const savedTheme = localStorage.getItem('theme-override');
+  // Check if Settings system exists and has themeMode
   let theme;
-  if (savedTheme) {
-    theme = savedTheme;
-    manualOverride = true;
+  if (window.Settings) {
+    const themeMode = window.Settings.get('themeMode');
+    if (themeMode === 'dark') {
+      theme = 'dark';
+      manualOverride = true;
+    } else if (themeMode === 'light') {
+      theme = 'light';
+      manualOverride = true;
+    } else if (themeMode === 'manual') {
+      // Check for manual toggle override
+      const savedTheme = localStorage.getItem('theme-override');
+      theme = savedTheme || getThemeForTime();
+      manualOverride = !!savedTheme;
+    } else {
+      // auto mode
+      theme = getThemeForTime();
+      manualOverride = false;
+    }
   } else {
-    theme = getThemeForTime();
+    // Fallback if Settings not loaded yet
+    const savedTheme = localStorage.getItem('theme-override');
+    theme = savedTheme || getThemeForTime();
+    manualOverride = !!savedTheme;
   }
+  
   applyTheme(theme);
   
   // Re-enable transitions after a frame
@@ -108,9 +126,19 @@ function initTheme() {
     themeInfo.addEventListener('click', toggleTheme);
   }
   
-  // Check for automatic theme changes every minute (only if no manual override)
+  // Check for automatic theme changes every minute
   setInterval(() => {
-    if (!manualOverride) {
+    // Only auto-switch if themeMode is 'auto' (not dark/light/manual)
+    if (window.Settings) {
+      const themeMode = window.Settings.get('themeMode');
+      if (themeMode === 'auto') {
+        const newTheme = getThemeForTime();
+        if (newTheme !== currentTheme) {
+          applyTheme(newTheme);
+        }
+      }
+    } else if (!manualOverride) {
+      // Fallback for old behavior
       const newTheme = getThemeForTime();
       if (newTheme !== currentTheme) {
         applyTheme(newTheme);
@@ -127,3 +155,7 @@ if (document.readyState === 'loading') {
 } else {
   initTheme();
 }
+
+// Expose functions globally for settings system
+window.applyTheme = applyTheme;
+window.getThemeForTime = getThemeForTime;

@@ -44,6 +44,11 @@ function unlockAudio() {
  * Play notification sound
  */
 function playNotificationSound() {
+  // Check settings
+  if (window.Settings && !window.Settings.get('soundEnabled')) {
+    return;
+  }
+  
   if (!CONFIG.ENABLE_SOUNDS || !notificationSound) {
     return;
   }
@@ -143,6 +148,11 @@ async function requestNotificationPermission() {
  * @param {number} distance - Distance in km
  */
 function sendBrowserNotification(plane, distance) {
+  // Check settings
+  if (window.Settings && !window.Settings.get('browserNotificationsEnabled')) {
+    return;
+  }
+  
   if (!CONFIG.ENABLE_BROWSER_NOTIFICATIONS || notificationPermission !== 'granted') {
     return;
   }
@@ -164,9 +174,25 @@ function sendBrowserNotification(plane, distance) {
   const callsign = plane.callsign?.trim() || plane.icao24;
   const country = plane.country || 'Unknown';
   const altitude = plane.geo_altitude || plane.baro_altitude || plane.altitude;
-  const altitudeText = altitude ? `${Math.round(altitude)}m` : 'Unknown';
   
-  const body = `${callsign} • ${country}\n${distance.toFixed(1)}km away • ${altitudeText} altitude`;
+  // Use conversion functions if available
+  let altitudeText = 'Unknown';
+  if (altitude) {
+    if (window.convertAltitude) {
+      const converted = window.convertAltitude(altitude);
+      altitudeText = `${converted.value}${converted.label}`;
+    } else {
+      altitudeText = `${Math.round(altitude)}m`;
+    }
+  }
+  
+  let distanceText = `${distance.toFixed(1)}km`;
+  if (window.convertDistance) {
+    const converted = window.convertDistance(distance);
+    distanceText = `${converted.value}${converted.label}`;
+  }
+  
+  const body = `${callsign} • ${country}\n${distanceText} away • ${altitudeText} altitude`;
   
   try {
     const notification = new Notification(title, {
@@ -364,7 +390,15 @@ function updateNotificationDropdown() {
     
     const meta = document.createElement('div');
     meta.className = 'notification-meta';
-    meta.textContent = `${notification.distance.toFixed(1)}km away • ${timeAgo}`;
+    
+    // Use conversion function if available
+    let distanceText = `${notification.distance.toFixed(1)}km`;
+    if (window.convertDistance) {
+      const converted = window.convertDistance(notification.distance);
+      distanceText = `${converted.value}${converted.label}`;
+    }
+    
+    meta.textContent = `${distanceText} away • ${timeAgo}`;
     
     content.appendChild(title);
     content.appendChild(meta);

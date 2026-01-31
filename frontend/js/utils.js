@@ -235,8 +235,9 @@ function showConfirmModal(title, message) {
  * @param {Function|null} onConfirm - Callback for confirm button (null = no confirm button)
  * @param {string} confirmText - Text for confirm button (default: 'OK')
  * @param {boolean} showCancel - Show cancel button (default: false)
+ * @param {boolean} successButton - Make confirm button green (default: false)
  */
-function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', showCancel = false) {
+function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', showCancel = false, successButton = false) {
   const overlay = document.getElementById('modal-overlay');
   const dialog = overlay?.querySelector('.modal-dialog');
   const modalTitle = document.getElementById('modal-title');
@@ -259,6 +260,13 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   confirmBtn.textContent = confirmText;
   confirmBtn.style.display = 'block';
   cancelBtn.style.display = showCancel ? 'block' : 'none';
+  
+  // Apply success styling if needed
+  if (successButton) {
+    confirmBtn.classList.add('btn-success');
+  } else {
+    confirmBtn.classList.remove('btn-success');
+  }
   
   // Add logbook-modal class for wider modal if title contains "Logbook"
   if (title.includes('Logbook')) {

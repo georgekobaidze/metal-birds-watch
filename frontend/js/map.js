@@ -269,10 +269,40 @@ function updatePlaneMarkers(planes) {
 function createPlanePopupContent(plane) {
   const callsign = plane.callsign || 'Unknown';
   const country = plane.country || 'Unknown';
-  const altitude = plane.altitude ? `${Math.round(plane.altitude)}m` : 'N/A';
-  const speed = plane.velocity ? `${Math.round(plane.velocity * 3.6)} km/h` : 'N/A';
+  
+  // Use conversion functions if available, otherwise fallback
+  let altitude = 'N/A';
+  if (plane.altitude) {
+    if (window.convertAltitude) {
+      const converted = window.convertAltitude(plane.altitude);
+      altitude = `${converted.value.toLocaleString()}${converted.label}`;
+    } else {
+      altitude = `${Math.round(plane.altitude)}m`;
+    }
+  }
+  
+  let speed = 'N/A';
+  if (plane.velocity) {
+    const speedKmh = plane.velocity * 3.6;
+    if (window.convertSpeed) {
+      const converted = window.convertSpeed(speedKmh);
+      speed = converted.text;
+    } else {
+      speed = `${Math.round(speedKmh)} km/h`;
+    }
+  }
+  
   const heading = plane.heading ? `${Math.round(plane.heading)}°` : 'N/A';
-  const distance = formatDistance(plane.distance);
+  
+  let distance = 'N/A';
+  if (plane.distance !== undefined) {
+    if (window.convertDistance) {
+      const converted = window.convertDistance(plane.distance);
+      distance = `${converted.value}${converted.label}`;
+    } else {
+      distance = formatDistance(plane.distance);
+    }
+  }
   
   return `
     <div class="plane-popup">
