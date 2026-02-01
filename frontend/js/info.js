@@ -4,7 +4,7 @@
 
 // Configuration - Edit these values
 const INFO_CONFIG = {
-  photo: "assets/icons/logo.png", // Replace with your photo path
+  photo: "assets/images/author.jpg", // Replace with your photo path
   firstName: "Your",
   lastName: "Name",
   title: "Your Title / Role",
