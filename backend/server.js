@@ -81,6 +81,17 @@ app.get('/api/health', healthRateLimiter, (req, res) => {
     });
 });
 
+// Debug endpoint - test OpenSky connectivity (remove after debugging)
+app.get('/api/debug/opensky', async (req, res) => {
+    try {
+        const response = await fetch('https://auth.opensky-network.org/auth/realms/opensky-network/.well-known/openid-configuration');
+        const data = await response.json();
+        res.json({ status: 'reachable', issuer: data.issuer });
+    } catch (error) {
+        res.status(500).json({ status: 'unreachable', error: error.message, cause: error.cause?.message });
+    }
+});
+
 // Error handling middleware (must be last!)
 app.use((err, req, res, next) => {
     // Log full error details internally
