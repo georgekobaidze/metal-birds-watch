@@ -47,7 +47,7 @@ const INFO_CONFIG = {
     "Desktop app version",
     "Smartwatch app version",
     "Customizable tracking radius and altitude filters",
-    "Epecial notifications for favorite aircraft types and models",
+    "Special notifications for favorite aircraft types and models",
   ],
   disclaimer: [
     "Your Privacy Matters: This application is completely stateless and privacy-first by design. We do not store any personal information or user data in any persistent database.",
