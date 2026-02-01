@@ -10,11 +10,17 @@ const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.h
  * @param {string} str - String to escape
  * @returns {string} Escaped string safe for HTML insertion
  */
+const HTML_ESCAPE_MAP = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;'
+};
+
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
-  const div = document.createElement('div');
-  div.textContent = String(str);
-  return div.innerHTML;
+  return String(str).replace(/[&<>"']/g, (ch) => HTML_ESCAPE_MAP[ch]);
 }
 
 /**
