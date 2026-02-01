@@ -52,7 +52,7 @@ function validateCoordinates(req, res, next) {
     ipLocations.set(ip, locations);
   }
   
-  // Check if this is a new location for this IP
+  // Check if this is a new location for this IPNow
   if (!locations.has(gridKey)) {
     // Check if IP has reached location limit
     if (locations.size >= MAX_LOCATIONS_PER_IP) {

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 require('dotenv').config();
 
 const app = express();
@@ -32,8 +33,9 @@ const corsOptions = {
 };
 
 // Middleware
+app.use(helmet());  // Security headers
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));  // Limit body size
 
 // IP request logging (temporary - for testing)
 app.use((req, res, next) => {
