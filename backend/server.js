@@ -81,58 +81,6 @@ app.get('/api/health', healthRateLimiter, (req, res) => {
     });
 });
 
-// Debug endpoint - test OpenSky connectivity (remove after debugging)
-app.get('/api/debug/opensky', async (req, res) => {
-    try {
-        const response = await fetch('https://auth.opensky-network.org/auth/realms/opensky-network/.well-known/openid-configuration');
-        const data = await response.json();
-        res.json({ status: 'reachable', issuer: data.issuer });
-    } catch (error) {
-        res.status(500).json({ status: 'unreachable', error: error.message, cause: error.cause?.message });
-    }
-});
-
-// Debug endpoint - test auth (remove after debugging)
-app.get('/api/debug/auth', async (req, res) => {
-    const { OPENSKY_CLIENT_ID, OPENSKY_CLIENT_SECRET, OPENSKY_AUTH_URL } = require('./config');
-    
-    // Check if credentials exist (don't log actual values!)
-    const hasId = !!OPENSKY_CLIENT_ID;
-    const hasSecret = !!OPENSKY_CLIENT_SECRET;
-    const idLength = OPENSKY_CLIENT_ID?.length || 0;
-    const secretLength = OPENSKY_CLIENT_SECRET?.length || 0;
-    
-    if (!hasId || !hasSecret) {
-        return res.json({ error: 'Missing credentials', hasId, hasSecret });
-    }
-    
-    try {
-        const params = new URLSearchParams({
-            grant_type: 'client_credentials',
-            client_id: OPENSKY_CLIENT_ID,
-            client_secret: OPENSKY_CLIENT_SECRET
-        });
-        
-        const response = await fetch(OPENSKY_AUTH_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params
-        });
-        
-        const text = await response.text();
-        
-        res.json({
-            status: response.status,
-            ok: response.ok,
-            idLength,
-            secretLength,
-            response: response.ok ? 'Token received!' : text
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message, cause: error.cause?.message, idLength, secretLength });
-    }
-});
-
 // Error handling middleware (must be last!)
 app.use((err, req, res, next) => {
     // Log full error details internally
