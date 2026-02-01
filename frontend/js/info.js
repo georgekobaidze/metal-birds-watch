@@ -48,6 +48,15 @@ const INFO_CONFIG = {
     "Smartwatch app version",
     "Customizable tracking radius and altitude filters",
     "Epecial notifications for favorite aircraft types and models",
+  ],
+  disclaimer: [
+    "Your Privacy Matters: This application is completely stateless and privacy-first by design. We do not store any personal information or user data in any persistent database.",
+    
+    "Temporary Caching Only: Flight data from the OpenSky Network API is temporarily cached in server memory for 30 seconds to optimize performance and respect API rate limits. This cache is automatically cleared and refreshed frequently.",
+    
+    "Your Location: Your GPS coordinates are only used to filter relevant aircraft data in real-time. They are never logged, stored, or transmitted to any third-party services. Each request is independent and anonymous.",
+    
+    "No Tracking: We don't use cookies for tracking, analytics, or advertising. Your browsing activity and usage patterns are not monitored or recorded in any way."
   ]
 };
 
@@ -101,6 +110,21 @@ function populateBuiltBy() {
       p.textContent = paragraph;
       p.className = 'purpose-paragraph';
       purposeEl.appendChild(p);
+    });
+  }
+  
+  // Disclaimer
+  const disclaimerEl = document.getElementById('info-disclaimer');
+  if (disclaimerEl) {
+    // Clear existing content
+    disclaimerEl.innerHTML = '';
+    
+    // Create separate paragraphs for each disclaimer text block
+    INFO_CONFIG.disclaimer.forEach((paragraph, index) => {
+      const p = document.createElement('p');
+      p.textContent = paragraph;
+      p.className = 'disclaimer-paragraph';
+      disclaimerEl.appendChild(p);
     });
   }
   
