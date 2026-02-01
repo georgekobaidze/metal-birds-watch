@@ -13,7 +13,7 @@ let soundUnlocked = false; // Track if audio context is unlocked
  */
 function initNotificationSound() {
   // Create audio element for airplane announcement chime
-  notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1570/1570-preview.mp3');
+  notificationSound = new Audio('assets/sounds/notification-chime.mp3');
   notificationSound.volume = 0.6; // 60% volume
   
   // Preload the sound

@@ -20,31 +20,45 @@ Object.defineProperty(window, 'userLocation', {
  * Initialize the Leaflet map
  */
 function initMap() {
-  // Create map centered on default location (will update with user location)
-  map = L.map('map', {
-    center: [36.0179, -75.6684], // Kitty Hawk, NC - Birthplace of Aviation
-    zoom: CONFIG.MAP_ZOOM_DEFAULT,
-    zoomControl: true,
-    minZoom: CONFIG.MAP_ZOOM_MIN,
-    maxZoom: CONFIG.MAP_ZOOM_MAX
-  });
-  
-  // Add tile layer from CSS variable
-  const tileUrl = getComputedStyle(document.documentElement)
-    .getPropertyValue('--map-tiles')
-    .trim()
-    .replace(/['"]/g, '');
-  
-  tileLayer = L.tileLayer(tileUrl, {
-    attribution: '© OpenStreetMap contributors © CARTO',
-    maxZoom: 19
-  }).addTo(map);
-  
-  // Store globally for theme switching
-  window.map = map;
-  window.tileLayer = tileLayer;
-  
-  debug('Map initialized');
+  try {
+    // Create map centered on default location (will update with user location)
+    map = L.map('map', {
+      center: [36.0179, -75.6684], // Kitty Hawk, NC - Birthplace of Aviation
+      zoom: CONFIG.MAP_ZOOM_DEFAULT,
+      zoomControl: true,
+      minZoom: CONFIG.MAP_ZOOM_MIN,
+      maxZoom: CONFIG.MAP_ZOOM_MAX
+    });
+    
+    // Add tile layer from CSS variable
+    const tileUrl = getComputedStyle(document.documentElement)
+      .getPropertyValue('--map-tiles')
+      .trim()
+      .replace(/['"]/g, '');
+    
+    tileLayer = L.tileLayer(tileUrl, {
+      attribution: '© OpenStreetMap contributors © CARTO',
+      maxZoom: 19
+    }).addTo(map);
+    
+    // Store globally for theme switching
+    window.map = map;
+    window.tileLayer = tileLayer;
+    
+    debug('Map initialized');
+  } catch (error) {
+    console.error('Failed to initialize map:', error);
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+      mapElement.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: var(--bg-secondary); color: var(--text-primary); text-align: center; padding: 2rem;">
+          <span style="font-size: 3rem; margin-bottom: 1rem;">🗺️</span>
+          <h3 style="margin-bottom: 0.5rem;">Failed to load map</h3>
+          <p style="color: var(--text-secondary);">Please refresh the page to try again.</p>
+        </div>
+      `;
+    }
+  }
 }
 
 /**
@@ -116,8 +130,27 @@ function getUserLocation() {
       }
     },
     (error) => {
-      showError(`Geolocation error: ${error.message}`);
+      let message = 'Unable to get your location. ';
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          message += 'Please enable location permissions in your browser settings.';
+          break;
+        case error.POSITION_UNAVAILABLE:
+          message += 'Location information is unavailable.';
+          break;
+        case error.TIMEOUT:
+          message += 'Location request timed out. Please try again.';
+          break;
+        default:
+          message += error.message;
+      }
+      showError(message);
       console.error('Geolocation error:', error);
+      
+      // Show a toast notification as well
+      if (window.showToast) {
+        showToast(message, 'error');
+      }
     }
   );
   */
@@ -281,8 +314,9 @@ function updatePlaneMarkers(planes) {
  * @returns {string} HTML for popup
  */
 function createPlanePopupContent(plane) {
-  const callsign = plane.callsign || 'Unknown';
-  const country = plane.country || 'Unknown';
+  const callsign = escapeHtml(plane.callsign) || 'Unknown';
+  const country = escapeHtml(plane.country) || 'Unknown';
+  const icao24 = escapeHtml(plane.icao24);
   
   // Use conversion functions if available, otherwise fallback
   let altitude = 'N/A';
@@ -346,7 +380,7 @@ function createPlanePopupContent(plane) {
         </div>
         <div class="popup-row">
           <span class="popup-label">🔖 ICAO24:</span>
-          <span class="popup-value">${plane.icao24}</span>
+          <span class="popup-value">${icao24}</span>
         </div>
       </div>
     </div>

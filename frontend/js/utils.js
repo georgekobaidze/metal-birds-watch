@@ -2,6 +2,21 @@
    UTILITY FUNCTIONS
    ============================================ */
 
+// Debug mode - only enabled in development
+const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+/**
+ * Escape HTML to prevent XSS attacks
+ * @param {string} str - String to escape
+ * @returns {string} Escaped string safe for HTML insertion
+ */
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  const div = document.createElement('div');
+  div.textContent = String(str);
+  return div.innerHTML;
+}
+
 /**
  * Calculate distance between two coordinates using Haversine formula
  * @param {number} lat1 - First latitude
@@ -143,6 +158,8 @@ function showError(message) {
  * @param {*} data - Optional data to log
  */
 function debug(message, data = null) {
+  if (!DEBUG_MODE) return;
+  
   if (data) {
     console.log(`[DEBUG] ${message}`, data);
   } else {
