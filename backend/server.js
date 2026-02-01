@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
@@ -37,7 +38,18 @@ app.use(helmet());  // Security headers
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10kb' }));  // Limit body size
 
-// IP request logging (temporary - for testing)
+// Request timeout (30 seconds)
+app.use((req, res, next) => {
+  req.setTimeout(30000);
+  res.setTimeout(30000, () => {
+    if (!res.headersSent) {
+      res.status(408).json({ error: 'Request timeout' });
+    }
+  });
+  next();
+});
+
+// TODO: Remove IP logging after production verification
 app.use((req, res, next) => {
   const ip = req.ip || req.socket.remoteAddress;
   const timestamp = new Date().toISOString();
@@ -52,8 +64,17 @@ const adminRoute = require('./routes/admin');
 app.use('/api', planesRoute);
 app.use('/api/admin', adminRoute);
 
+// Health check rate limiter
+const healthRateLimiter = rateLimit({
+  windowMs: 60000,  // 1 minute
+  max: 10,          // 10 requests per minute
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many health check requests' }
+});
+
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/api/health', healthRateLimiter, (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString()
