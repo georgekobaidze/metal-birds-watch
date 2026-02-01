@@ -81,17 +81,6 @@ app.get('/api/health', healthRateLimiter, (req, res) => {
     });
 });
 
-// Debug endpoint - test full planes fetch (remove after debugging)
-app.get('/api/debug/planes', async (req, res) => {
-    try {
-        const opensky = require('./services/opensky');
-        const planes = await opensky.fetchPlanes(34.0522, -118.2437, 25);
-        res.json({ success: true, count: planes.length });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message, stack: error.stack });
-    }
-});
-
 // Error handling middleware (must be last!)
 app.use((err, req, res, next) => {
     // Log full error details internally
