@@ -405,7 +405,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dropdown && !dropdown.contains(e.target) && !notificationsBtn.contains(e.target)) {
       toggleNotificationDropdown(false);
     }
+    
+    // Close hamburger menu when clicking outside
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const headerLinks = document.getElementById('header-links');
+    if (hamburgerBtn && headerLinks && 
+        !hamburgerBtn.contains(e.target) && !headerLinks.contains(e.target)) {
+      hamburgerBtn.classList.remove('active');
+      headerLinks.classList.remove('open');
+    }
   });
+  
+  // Setup hamburger menu toggle
+  const hamburgerBtn = document.getElementById('hamburger-btn');
+  const headerLinks = document.getElementById('header-links');
+  if (hamburgerBtn && headerLinks) {
+    hamburgerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hamburgerBtn.classList.toggle('active');
+      headerLinks.classList.toggle('open');
+    });
+    
+    // Close menu when a link is clicked
+    headerLinks.querySelectorAll('.header-link').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active');
+        headerLinks.classList.remove('open');
+      });
+    });
+  }
   
   // Hide loading screen after initialization
   setTimeout(hideLoadingScreen, 2000);
