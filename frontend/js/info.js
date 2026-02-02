@@ -60,10 +60,10 @@ const INFO_CONFIG = {
     "No Tracking: We don't use cookies for tracking, analytics, or advertising. Your browsing activity and usage patterns are not monitored or recorded in any way."
   ],
   contribute: {
-    discord: "https://discord.gg/your-invite-code",
+    discord: "https://discord.gg/cRe5ThCA",
     github: "https://github.com/georgekobaidze/metal-birds-watch",
-    youtube: "https://youtube.com/@your-channel",
-    devto: "https://dev.to/your-article"
+    youtube: "#",
+    devto: "#"
   }
 };
 
