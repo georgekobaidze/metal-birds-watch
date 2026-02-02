@@ -427,6 +427,9 @@
   border-bottom: 1px solid var(--border-color);
   background: rgba(0, 212, 255, 0.05);
   flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .modal-title {
@@ -436,6 +439,21 @@
   letter-spacing: 1px;
   color: var(--neon-cyan);
   text-shadow: var(--cyan-glow);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.75rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color var(--transition-speed) ease;
+}
+
+.modal-close-btn:hover {
+  color: var(--neon-cyan);
 }
 
 /* Modal body */
@@ -1088,35 +1106,6 @@
   font-size: var(--font-size-sm);
 }
 
-/* Modal close button */
-.modal-close {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
-  background: rgba(255, 0, 128, 0.1);
-  border: 2px solid rgba(255, 0, 128, 0.3);
-  border-radius: var(--border-radius);
-  color: var(--neon-pink);
-  font-size: 24px;
-  line-height: 1;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 300;
-}
-
-.modal-close:hover {
-  background: rgba(255, 0, 128, 0.2);
-  border-color: var(--neon-pink);
-  box-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
-  transform: scale(1.05);
-}
-
 /* Info content (Built By) */
 .info-content {
   display: flex;
@@ -1313,6 +1302,62 @@
   font-size: var(--font-size-sm);
   font-style: italic;
   margin: 0;
+}
+
+/* Contribute modal */
+.contribute-container {
+  text-align: center;
+  padding: var(--spacing-md) 0;
+}
+
+.contribute-text {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-md);
+}
+
+.contribute-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.contribute-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: var(--border-radius-lg);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  min-width: 140px;
+}
+
+.contribute-link svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--neon-cyan);
+}
+
+.contribute-link span {
+  font-weight: 500;
+}
+
+.contribute-link:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--neon-cyan);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 212, 255, 0.3);
+}
+
+.contribute-footer {
+  margin-top: var(--spacing-lg);
+  color: var(--text-secondary);
 }
 
 /* Roadmap content (What's Next) */

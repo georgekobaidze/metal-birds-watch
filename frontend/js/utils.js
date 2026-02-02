@@ -272,13 +272,11 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   const dialog = overlay?.querySelector('.modal-dialog');
   const modalTitle = document.getElementById('modal-title');
   const modalBody = document.querySelector('.modal-body');
+  const modalFooter = document.querySelector('.modal-footer');
   const confirmBtn = document.getElementById('modal-confirm');
   const cancelBtn = document.getElementById('modal-cancel');
   
   if (!overlay) {
-    if (DEBUG_MODE && typeof console !== 'undefined' && console.error) {
-      console.error('showModal: modal overlay element with id "modal-overlay" not found in DOM for title:', title);
-    }
     return;
   }
   
@@ -294,10 +292,15 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   // Set HTML content
   modalBody.innerHTML = htmlContent;
   
-  // Configure buttons
-  confirmBtn.textContent = confirmText;
-  confirmBtn.style.display = 'block';
-  cancelBtn.style.display = showCancel ? 'block' : 'none';
+  // Configure buttons - hide footer if confirmText is null
+  if (confirmText === null) {
+    modalFooter.style.display = 'none';
+  } else {
+    modalFooter.style.display = 'flex';
+    confirmBtn.textContent = confirmText;
+    confirmBtn.style.display = 'block';
+    cancelBtn.style.display = showCancel ? 'block' : 'none';
+  }
   
   // Apply success styling if needed
   if (successButton) {
@@ -316,6 +319,9 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   // Show modal
   overlay.classList.add('active');
   
+  // Get X close button
+  const closeXBtn = document.getElementById('modal-close-x');
+  
   // Handle confirm
   const handleConfirm = () => {
     if (onConfirm) {
@@ -325,7 +331,7 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
     cleanup();
   };
   
-  // Handle cancel
+  // Handle cancel/close
   const handleCancel = () => {
     overlay.classList.remove('active');
     cleanup();
@@ -342,6 +348,7 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   const cleanup = () => {
     confirmBtn.removeEventListener('click', handleConfirm);
     cancelBtn.removeEventListener('click', handleCancel);
+    closeXBtn?.removeEventListener('click', handleCancel);
     overlay.removeEventListener('click', handleOverlayClick);
     dialog?.classList.remove('logbook-modal');
     currentModalCleanup = null;
@@ -355,5 +362,6 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   if (showCancel) {
     cancelBtn.addEventListener('click', handleCancel);
   }
+  closeXBtn?.addEventListener('click', handleCancel);
   overlay.addEventListener('click', handleOverlayClick);
 }
