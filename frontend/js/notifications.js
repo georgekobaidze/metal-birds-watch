@@ -307,7 +307,12 @@ function saveNotifications() {
   try {
     localStorage.setItem('notificationHistory', JSON.stringify(notificationHistory));
   } catch (e) {
-    // Silently fail
+    // Log in development to avoid completely silent data loss
+    if (typeof debug === 'function') {
+      debug('Failed to save notificationHistory to localStorage', e);
+    } else if (typeof console !== 'undefined' && typeof console.error === 'function') {
+      console.error('Failed to save notificationHistory to localStorage', e);
+    }
   }
 }
 
