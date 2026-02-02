@@ -4,6 +4,23 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+// Validate required environment variables at startup
+const requiredEnvVars = [
+    'OPENSKY_BASE_URL',
+    'OPENSKY_AUTH_URL',
+    'OPENSKY_CLIENT_ID',
+    'OPENSKY_CLIENT_SECRET'
+];
+
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingVars.length > 0) {
+    console.error('Error: Missing required environment variables:');
+    missingVars.forEach(varName => console.error(`  - ${varName}`));
+    console.error('\nPlease set these variables in your .env file or environment.');
+    console.error('See .env.example for reference.');
+    process.exit(1);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
