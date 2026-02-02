@@ -275,6 +275,9 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   const cancelBtn = document.getElementById('modal-cancel');
   
   if (!overlay) {
+    if (DEBUG_MODE && typeof console !== 'undefined' && console.error) {
+      console.error('showModal: modal overlay element with id "modal-overlay" not found in DOM for title:', title);
+    }
     return;
   }
   
