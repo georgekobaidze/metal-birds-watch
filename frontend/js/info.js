@@ -20,7 +20,8 @@ function getSocialIcon(iconName) {
 
 // Configuration - Edit these values
 const INFO_CONFIG = {
-  photo: "assets/images/author.jpg", // Replace with your photo path
+  photo: "assets/images/author-real.jpeg", // Real photo (default)
+  photoAI: "assets/images/author.jpg", // AI-generated photo (on hover)
   firstName: "Giorgi",
   lastName: "Kobaidze",
   title: "Principal Software Engineer | Aircraft Enthusiast",
@@ -80,11 +81,18 @@ function initInfoModals() {
  * Populate Built By modal
  */
 function populateBuiltBy() {
-  // Photo
+  // Photo - real (default)
   const photoEl = document.getElementById('info-photo');
   if (photoEl) {
     photoEl.src = INFO_CONFIG.photo;
     photoEl.alt = `${INFO_CONFIG.firstName} ${INFO_CONFIG.lastName}`;
+  }
+  
+  // Photo - AI (hover)
+  const photoAIEl = document.getElementById('info-photo-ai');
+  if (photoAIEl) {
+    photoAIEl.src = INFO_CONFIG.photoAI;
+    photoAIEl.alt = `${INFO_CONFIG.firstName} ${INFO_CONFIG.lastName} - AI Generated`;
   }
   
   // Name

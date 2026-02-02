@@ -1123,14 +1123,104 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+.info-photo-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
 .info-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100px;
   height: 100px;
   border-radius: 50%;
   border: 3px solid var(--neon-cyan);
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
   object-fit: cover;
-  flex-shrink: 0;
+}
+
+.info-photo-real {
+  z-index: 2;
+  transition: opacity 0.15s ease;
+}
+
+.info-photo-ai {
+  z-index: 1;
+}
+
+.glitch-overlay {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: calc(100% + 6px);
+  height: calc(100% + 6px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+}
+
+/* Subtle electric glitch on hover */
+.info-photo-container:hover .info-photo-real {
+  opacity: 0;
+}
+
+.info-photo-container:hover .glitch-overlay {
+  animation: electric-flash 0.2s ease-out;
+}
+
+.info-photo-container:hover .info-photo-ai {
+  animation: subtle-flicker 0.2s ease-out;
+}
+
+@keyframes electric-flash {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    box-shadow: 
+      0 0 20px rgba(0, 180, 255, 0.9),
+      0 0 40px rgba(0, 212, 255, 0.6),
+      inset 0 0 15px rgba(100, 200, 255, 0.4);
+  }
+  40% {
+    opacity: 0.3;
+  }
+  60% {
+    opacity: 1;
+    box-shadow: 
+      0 0 25px rgba(0, 212, 255, 1),
+      0 0 50px rgba(0, 180, 255, 0.5);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes subtle-flicker {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(2px, -1px);
+  }
+  40% {
+    transform: translate(-1px, 1px);
+  }
+  60% {
+    transform: translate(1px, -1px);
+  }
+  80% {
+    transform: translate(-1px, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
 .info-identity {
