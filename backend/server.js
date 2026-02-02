@@ -93,7 +93,7 @@ app.use((err, req, res, next) => {
 // Start server with error handling
 const env = process.env.NODE_ENV || 'development';
 app.listen(PORT, () => {
-    console.log(`Server started [${env}]`);
+    console.log(`Server running at http://localhost:${PORT} [${env}]`);
 })
 .on('error', (error) => {
     // Handle server startup errors
