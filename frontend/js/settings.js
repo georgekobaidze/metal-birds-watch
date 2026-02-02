@@ -42,7 +42,12 @@ const Settings = {
       localStorage.setItem(this.storageKey, JSON.stringify(settings));
       debug('✅ Settings saved');
     } catch (e) {
-      // Silently fail
+      // Log error for diagnostic purposes
+      debug('❌ Failed to save settings:', e.message);
+      // Show user feedback
+      if (typeof showToast === 'function') {
+        showToast('Failed to save settings. Check browser storage permissions.', 'error');
+      }
     }
   }
 };
