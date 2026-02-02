@@ -154,6 +154,7 @@ function updateText(elementId, text) {
  * @param {string} message - Error message
  */
 function showError(message) {
+  console.error(message);
   // Could enhance with toast notification
 }
 
