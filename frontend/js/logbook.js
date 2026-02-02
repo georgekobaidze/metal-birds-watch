@@ -223,9 +223,9 @@ function showLogbook() {
     html += '<div class="logbook-header">';
     html += `<div class="logbook-stats">${entries.length} total flights</div>`;
     html += '<div class="logbook-actions">';
-    html += '<button class="logbook-export-btn" onclick="Logbook.exportLogbook(\'json\')">Export JSON</button>';
-    html += '<button class="logbook-export-btn" onclick="Logbook.exportLogbook(\'csv\')">Export CSV</button>';
-    html += '<button class="logbook-clear-btn" onclick="clearLogbook()">Clear All</button>';
+    html += '<button class="logbook-export-btn" id="export-json-btn">Export JSON</button>';
+    html += '<button class="logbook-export-btn" id="export-csv-btn">Export CSV</button>';
+    html += '<button class="logbook-clear-btn" id="clear-logbook-btn">Clear All</button>';
     html += '</div>';
     html += '</div>';
     
@@ -301,7 +301,24 @@ function showLogbook() {
   html += '</div>';
   
   // Show in modal
-  showModal('Flight Logbook 📖', html, null, 'Close');
+  showModal('Flight Logbook', html, null, 'Close');
+  
+  // Attach event listeners after modal is rendered
+  setTimeout(() => {
+    const exportJsonBtn = document.getElementById('export-json-btn');
+    const exportCsvBtn = document.getElementById('export-csv-btn');
+    const clearLogbookBtn = document.getElementById('clear-logbook-btn');
+    
+    if (exportJsonBtn) {
+      exportJsonBtn.addEventListener('click', () => Logbook.exportLogbook('json'));
+    }
+    if (exportCsvBtn) {
+      exportCsvBtn.addEventListener('click', () => Logbook.exportLogbook('csv'));
+    }
+    if (clearLogbookBtn) {
+      clearLogbookBtn.addEventListener('click', clearLogbook);
+    }
+  }, 0);
 }
 
 /**

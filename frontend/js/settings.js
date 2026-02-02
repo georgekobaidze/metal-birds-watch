@@ -197,7 +197,7 @@ function showSettings() {
     </div>
   `;
   
-  showModal('Settings ⚙️', html, () => {
+  showModal('Settings', html, () => {
     saveSettingsFromModal();
   }, 'Save', true, true); // Last parameter: successButton = true (green button)
   
