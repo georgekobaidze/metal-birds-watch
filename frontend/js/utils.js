@@ -190,8 +190,10 @@ function showConfirmModal(title, message) {
     const dialog = overlay?.querySelector('.modal-dialog');
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.querySelector('.modal-body');
+    const modalFooter = document.querySelector('.modal-footer');
     const confirmBtn = document.getElementById('modal-confirm');
     const cancelBtn = document.getElementById('modal-cancel');
+    const closeXBtn = document.getElementById('modal-close-x');
     
     if (!overlay || !modalBody) {
       resolve(false);
@@ -212,7 +214,10 @@ function showConfirmModal(title, message) {
     modalTitle.textContent = title;
     modalMessage.textContent = message;
     
-    // Show both buttons for confirmation
+    // Show footer and both buttons for confirmation
+    if (modalFooter) {
+      modalFooter.style.display = 'flex';
+    }
     confirmBtn.style.display = 'block';
     cancelBtn.style.display = 'block';
     confirmBtn.textContent = 'Confirm';
@@ -238,6 +243,7 @@ function showConfirmModal(title, message) {
     const cleanup = () => {
       confirmBtn.removeEventListener('click', handleConfirm);
       cancelBtn.removeEventListener('click', handleCancel);
+      closeXBtn?.removeEventListener('click', handleCancel);
       overlay.removeEventListener('click', handleOverlayClick);
     };
     
@@ -251,6 +257,7 @@ function showConfirmModal(title, message) {
     // Add listeners
     confirmBtn.addEventListener('click', handleConfirm);
     cancelBtn.addEventListener('click', handleCancel);
+    closeXBtn?.addEventListener('click', handleCancel);
     overlay.addEventListener('click', handleOverlayClick);
   });
 }
