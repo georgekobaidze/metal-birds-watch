@@ -163,7 +163,18 @@ function showError(message) {
  * @param {*} data - Optional data to log
  */
 function debug(message, data = null) {
-  // Debug logging disabled in production
+  // Only log in development / debug mode
+  if (!DEBUG_MODE) {
+    return;
+  }
+
+  const logger = console.debug ? console.debug.bind(console) : console.log.bind(console);
+
+  if (data !== null && data !== undefined) {
+    logger('[DEBUG]', message, data);
+  } else {
+    logger('[DEBUG]', message);
+  }
 }
 
 /**
