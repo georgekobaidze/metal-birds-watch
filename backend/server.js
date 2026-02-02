@@ -91,8 +91,9 @@ app.use((err, req, res, next) => {
 });
 
 // Start server with error handling
+const env = process.env.NODE_ENV || 'development';
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server started [${env}]`);
 })
 .on('error', (error) => {
     // Handle server startup errors
@@ -101,7 +102,7 @@ app.listen(PORT, () => {
     } else if (error.code === 'EACCES') {
         console.error(`Error: Permission denied to bind to port ${PORT}`);
     } else {
-        console.error('Server error:', error);
+        console.error('Server error:', error.message);
     }
     process.exit(1);
 });

@@ -102,7 +102,7 @@ function getSnapshot() {
   try {
     stats = getStats();
   } catch (statsError) {
-    console.error('Error getting cache stats:', statsError);
+    console.error('Error getting cache stats:', statsError.message);
     stats = {
       totalEntries: 0,
       maxEntries: cache.max,
@@ -128,7 +128,7 @@ function getSnapshot() {
       });
     }
   } catch (error) {
-    console.error('Error iterating cache entries:', error);
+    console.error('Error iterating cache entries:', error.message);
     // Return partial results with error flag
     return {
       stats,

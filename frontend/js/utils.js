@@ -154,7 +154,6 @@ function updateText(elementId, text) {
  * @param {string} message - Error message
  */
 function showError(message) {
-  console.error(message);
   // Could enhance with toast notification
 }
 
@@ -164,13 +163,7 @@ function showError(message) {
  * @param {*} data - Optional data to log
  */
 function debug(message, data = null) {
-  if (!DEBUG_MODE) return;
-  
-  if (data) {
-    console.log(`[DEBUG] ${message}`, data);
-  } else {
-    console.log(`[DEBUG] ${message}`);
-  }
+  // Debug logging disabled in production
 }
 
 /**
@@ -189,7 +182,6 @@ function showConfirmModal(title, message) {
     const cancelBtn = document.getElementById('modal-cancel');
     
     if (!overlay || !modalBody) {
-      console.error('Modal overlay or body not found');
       resolve(false);
       return;
     }
@@ -272,7 +264,6 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   const cancelBtn = document.getElementById('modal-cancel');
   
   if (!overlay) {
-    console.error('Modal overlay not found');
     return;
   }
   
