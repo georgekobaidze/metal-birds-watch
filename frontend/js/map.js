@@ -47,7 +47,6 @@ function initMap() {
     
     debug('Map initialized');
   } catch (error) {
-    console.error('Failed to initialize map:', error);
     const mapElement = document.getElementById('map');
     if (mapElement) {
       mapElement.innerHTML = `
@@ -145,7 +144,6 @@ function getUserLocation() {
           message += error.message;
       }
       showError(message);
-      console.error('Geolocation error:', error);
       
       // Show a toast notification as well
       if (window.showToast) {

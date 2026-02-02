@@ -46,7 +46,6 @@ async function fetchPlanes() {
     return data;
     
   } catch (error) {
-    console.error('Error fetching planes:', error);
     showError(`Failed to fetch plane data: ${error.message}`);
     
     // Update connection status to offline

@@ -65,7 +65,7 @@ function playNotificationSound() {
       debug('Sound playback error:', err.message);
     });
   } catch (error) {
-    console.error('Error playing notification sound:', error);
+    // Silently fail
   }
 }
 
@@ -84,7 +84,6 @@ function initNotifications() {
       notificationHistory = JSON.parse(saved);
       debug(`Loaded ${notificationHistory.length} notifications from storage`);
     } catch (e) {
-      console.error('Error loading notification history:', e);
       notificationHistory = [];
     }
   }
@@ -96,7 +95,6 @@ function initNotifications() {
       notifiedPlanes = new Set(JSON.parse(savedNotified));
       debug(`Loaded ${notifiedPlanes.size} notified planes from storage`);
     } catch (e) {
-      console.error('Error loading notified planes:', e);
       notifiedPlanes = new Set();
     }
   }
@@ -137,7 +135,6 @@ async function requestNotificationPermission() {
       return false;
     }
   } catch (error) {
-    console.error('Error requesting notification permission:', error);
     return false;
   }
 }
@@ -210,7 +207,7 @@ function sendBrowserNotification(plane, distance) {
     
     debug(`Browser notification sent: ${title} - ${callsign}`);
   } catch (error) {
-    console.error('Error sending browser notification:', error);
+    // Silently fail
   }
 }
 
@@ -310,7 +307,12 @@ function saveNotifications() {
   try {
     localStorage.setItem('notificationHistory', JSON.stringify(notificationHistory));
   } catch (e) {
-    console.error('Error saving notifications:', e);
+    // Log in development to avoid completely silent data loss
+    if (typeof debug === 'function') {
+      debug('Failed to save notificationHistory to localStorage', e);
+    } else if (typeof console !== 'undefined' && typeof console.error === 'function') {
+      console.error('Failed to save notificationHistory to localStorage', e);
+    }
   }
 }
 

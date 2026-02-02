@@ -164,12 +164,17 @@ function showError(message) {
  * @param {*} data - Optional data to log
  */
 function debug(message, data = null) {
-  if (!DEBUG_MODE) return;
-  
-  if (data) {
-    console.log(`[DEBUG] ${message}`, data);
+  // Only log in development / debug mode
+  if (!DEBUG_MODE) {
+    return;
+  }
+
+  const logger = console.debug ? console.debug.bind(console) : console.log.bind(console);
+
+  if (data !== null && data !== undefined) {
+    logger('[DEBUG]', message, data);
   } else {
-    console.log(`[DEBUG] ${message}`);
+    logger('[DEBUG]', message);
   }
 }
 
@@ -189,7 +194,6 @@ function showConfirmModal(title, message) {
     const cancelBtn = document.getElementById('modal-cancel');
     
     if (!overlay || !modalBody) {
-      console.error('Modal overlay or body not found');
       resolve(false);
       return;
     }
@@ -272,7 +276,9 @@ function showModal(title, htmlContent, onConfirm = null, confirmText = 'OK', sho
   const cancelBtn = document.getElementById('modal-cancel');
   
   if (!overlay) {
-    console.error('Modal overlay not found');
+    if (DEBUG_MODE && typeof console !== 'undefined' && console.error) {
+      console.error('showModal: modal overlay element with id "modal-overlay" not found in DOM for title:', title);
+    }
     return;
   }
   

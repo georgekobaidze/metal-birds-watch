@@ -26,7 +26,7 @@ const Settings = {
         return { ...this.defaults, ...JSON.parse(saved) };
       }
     } catch (e) {
-      console.error('Error loading settings:', e);
+      // Silently fail, return defaults
     }
     return { ...this.defaults };
   },
@@ -42,7 +42,12 @@ const Settings = {
       localStorage.setItem(this.storageKey, JSON.stringify(settings));
       debug('✅ Settings saved');
     } catch (e) {
-      console.error('Error saving settings:', e);
+      // Log error for diagnostic purposes
+      debug('❌ Failed to save settings:', e.message);
+      // Show user feedback
+      if (typeof showToast === 'function') {
+        showToast('Failed to save settings. Check browser storage permissions.', 'error');
+      }
     }
   }
 };
