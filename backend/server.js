@@ -49,14 +49,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// TODO: Remove IP logging after production verification
-app.use((req, res, next) => {
-  const ip = req.ip || req.socket.remoteAddress;
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method} ${req.path} - IP: ${ip}`);
-  next();
-});
-
 // Routes
 const planesRoute = require('./routes/planes');
 const adminRoute = require('./routes/admin');
@@ -83,12 +75,13 @@ app.get('/api/health', healthRateLimiter, (req, res) => {
 
 // Error handling middleware (must be last!)
 app.use((err, req, res, next) => {
-    // Log full error details internally
+    // Log error details (stack only in development)
+    const isDev = process.env.NODE_ENV !== 'production';
     console.error('Unhandled error:', {
         message: err.message,
-        stack: err.stack,
         path: req.path,
-        method: req.method
+        method: req.method,
+        ...(isDev && { stack: err.stack })
     });
     
     // Return sanitized error to client (don't expose internal details)
