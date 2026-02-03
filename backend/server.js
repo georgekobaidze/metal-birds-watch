@@ -1,6 +1,25 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
+
+// Validate required environment variables at startup
+const requiredEnvVars = [
+    'OPENSKY_BASE_URL',
+    'OPENSKY_AUTH_URL',
+    'OPENSKY_CLIENT_ID',
+    'OPENSKY_CLIENT_SECRET'
+];
+
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingVars.length > 0) {
+    console.error('Error: Missing required environment variables:');
+    missingVars.forEach(varName => console.error(`  - ${varName}`));
+    console.error('\nPlease set these variables in your .env file or environment.');
+    console.error('See .env.example for reference.');
+    process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,14 +51,18 @@ const corsOptions = {
 };
 
 // Middleware
+app.use(helmet());  // Security headers
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));  // Limit body size
 
-// IP request logging (temporary - for testing)
+// Request timeout (30 seconds)
 app.use((req, res, next) => {
-  const ip = req.ip || req.socket.remoteAddress;
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method} ${req.path} - IP: ${ip}`);
+  req.setTimeout(30000);
+  res.setTimeout(30000, () => {
+    if (!res.headersSent) {
+      res.status(408).json({ error: 'Request timeout' });
+    }
+  });
   next();
 });
 
@@ -50,8 +73,17 @@ const adminRoute = require('./routes/admin');
 app.use('/api', planesRoute);
 app.use('/api/admin', adminRoute);
 
+// Health check rate limiter
+const healthRateLimiter = rateLimit({
+  windowMs: 60000,  // 1 minute
+  max: 10,          // 10 requests per minute
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many health check requests' }
+});
+
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/api/health', healthRateLimiter, (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString()
@@ -60,12 +92,13 @@ app.get('/api/health', (req, res) => {
 
 // Error handling middleware (must be last!)
 app.use((err, req, res, next) => {
-    // Log full error details internally
+    // Log error details (stack only in development)
+    const isDev = process.env.NODE_ENV !== 'production';
     console.error('Unhandled error:', {
         message: err.message,
-        stack: err.stack,
         path: req.path,
-        method: req.method
+        method: req.method,
+        ...(isDev && { stack: err.stack })
     });
     
     // Return sanitized error to client (don't expose internal details)
@@ -75,8 +108,9 @@ app.use((err, req, res, next) => {
 });
 
 // Start server with error handling
+const env = process.env.NODE_ENV || 'development';
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running at http://localhost:${PORT} [${env}]`);
 })
 .on('error', (error) => {
     // Handle server startup errors
@@ -85,7 +119,7 @@ app.listen(PORT, () => {
     } else if (error.code === 'EACCES') {
         console.error(`Error: Permission denied to bind to port ${PORT}`);
     } else {
-        console.error('Server error:', error);
+        console.error('Server error:', error.message);
     }
     process.exit(1);
 });

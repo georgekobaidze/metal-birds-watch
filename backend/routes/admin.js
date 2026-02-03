@@ -30,7 +30,7 @@ router.get('/cache/snapshot', authenticateAdminWithRateLimit, (req, res) => {
       snapshot
     });
   } catch (error) {
-    console.error('Error fetching cache snapshot:', error);
+    console.error('Error fetching cache snapshot:', error.message);
     res.status(500).json({
       error: 'Failed to fetch cache snapshot'
     });
@@ -48,7 +48,7 @@ router.post('/cache/clear', authenticateAdminWithRateLimit, adminActionLimiter, 
       message: 'Cache cleared successfully'
     });
   } catch (error) {
-    console.error('Error clearing cache:', error);
+    console.error('Error clearing cache:', error.message);
     res.status(500).json({
       error: 'Failed to clear cache'
     });

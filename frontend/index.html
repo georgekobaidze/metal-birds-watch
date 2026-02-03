@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time plane tracking and notifications">
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://unpkg.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com;
+        media-src 'self';
+        connect-src 'self' http://localhost:3000 https://*.up.railway.app https://unpkg.com;
+    ">
+    <title>Metal Birds Watch - Track Planes Overhead</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/icons/logo.png">
+    <link rel="apple-touch-icon" href="assets/icons/logo.png">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Metal Birds Watch">
+    <meta property="og:description" content="Real-time aircraft tracking with live notifications when planes fly overhead">
+    <meta property="og:image" content="assets/icons/logo.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Metal Birds Watch">
+    <meta name="twitter:description" content="Real-time aircraft tracking with live notifications">
+    <meta name="twitter:image" content="assets/icons/logo.png">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="assets/icons/logo.png" as="image">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" as="style">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <img src="assets/icons/logo.png" alt="Metal Birds Watch" class="logo" id="logo">
+            <h1 class="app-title">METAL BIRDS WATCH</h1>
+            
+            <!-- Hamburger menu button (mobile only) -->
+            <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            
+            <div class="header-links" id="header-links">
+                <a href="#" class="header-link" id="built-by-link">Built By</a>
+                <span class="header-separator">|</span>
+                <a href="#" class="header-link" id="contribute-link">Contribute</a>
+                <span class="header-separator">|</span>
+                <a href="#" class="header-link" id="whats-next-link">What's Next?</a>
+            </div>
+        </div>
+        <div class="header-right">
+            <!-- Notification Bell -->
+            <div class="notification-wrapper">
+                <button class="header-btn" id="notifications-btn" title="Notifications">
+                    🔔
+                    <span class="badge" id="notification-badge" style="display: none;">0</span>
+                </button>
+                
+                <!-- Notification Dropdown -->
+                <div class="notification-dropdown" id="notification-dropdown">
+                    <div class="notification-header">
+                        <span class="notification-title">Notifications</span>
+                    </div>
+                    <div class="notification-list" id="notification-list">
+                        <div class="notification-empty">No aircraft detected yet</div>
+                    </div>
+                    <div class="notification-footer">
+                        <button class="mark-read-btn" id="mark-all-read-btn">Mark All Read</button>
+                        <button class="clear-all-btn" id="clear-notifications-btn">Clear All</button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="header-btn" id="logbook-btn" title="Logbook">
+                📖
+                <span class="badge" id="logbook-badge">0</span>
+            </button>
+            <button class="header-btn" id="settings-btn" title="Settings">
+                ⚙️
+            </button>
+        </div>
+    </header>
+
+    <!-- Map Container -->
+    <div id="map" class="map-container"></div>
+
+    <!-- Stats Panel -->
+    <div class="stats-panel" id="stats-panel">
+        <div class="panel-header">
+            <span class="panel-icon">📡</span>
+            <span class="panel-title">RADAR STATUS</span>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="sky-activity">--</div>
+            <div class="stat-label">Nearby Traffic</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="total-detected">0</div>
+            <div class="stat-label">Aircraft Spotted</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="closest-distance">--</div>
+            <div class="stat-label">Closest Plane</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-value" id="fastest-speed">--</div>
+            <div class="stat-label">Fastest Spotted</div>
+        </div>
+
+        <div class="connection-status" id="connection-status">
+            <span class="status-dot online"></span>
+            <span class="status-text">ONLINE</span>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ff006e;"></span>
+                <span class="legend-text">0-3km</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ffd60a;"></span>
+                <span class="legend-text">3-7km</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #7cfc00;"></span>
+                <span class="legend-text">7-12km</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #718096; opacity: 0.5;"></span>
+                <span class="legend-text">Outside</span>
+            </div>
+        </div>
+        <div class="location-info" id="location-info">
+            <span class="location-icon">📍</span>
+            <span class="location-text" id="location-text">Detecting location...</span>
+        </div>
+        <div class="theme-info" id="theme-info">
+            <span class="theme-icon">🌙</span>
+            <span class="theme-text" id="theme-text">Dark Mode</span>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <span class="modal-title" id="modal-title">Confirm Action</span>
+                <button class="modal-close-btn" id="modal-close-x">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message" id="modal-message">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="modal-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Built By Modal -->
+    <div class="modal-overlay" id="built-by-modal" style="display: none;">
+        <div class="modal-dialog modal-dialog-large">
+            <div class="modal-header">
+                <span class="modal-title">Built By</span>
+                <button class="modal-close-btn" id="built-by-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-content">
+                    <div class="info-profile">
+                        <div class="info-photo-container" id="info-photo-container">
+                            <img src="" alt="Profile" class="info-photo info-photo-real" id="info-photo">
+                            <img src="" alt="Profile AI" class="info-photo info-photo-ai" id="info-photo-ai">
+                            <div class="glitch-overlay"></div>
+                        </div>
+                        <div class="info-identity">
+                            <h2 class="info-name" id="info-name"></h2>
+                            <p class="info-title" id="info-title"></p>
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <h3 class="info-section-title">About Me</h3>
+                        <p class="info-bio" id="info-bio"></p>
+                    </div>
+                    <div class="info-section">
+                        <h3 class="info-section-title">Connect</h3>
+                        <div class="info-social" id="info-social"></div>
+                    </div>
+                    <div class="info-section" id="info-purpose-section">
+                        <h3 class="info-section-title">Project Purpose</h3>
+                        <p class="info-purpose" id="info-purpose"></p>
+                        <p class="info-purpose-cta">And that's not all! There are <a href="#" class="purpose-roadmap-link" id="purpose-roadmap-link">many more features planned</a>.</p>
+                    </div>
+                    <div class="info-section" id="info-disclaimer-section">
+                        <h3 class="info-section-title">Privacy & Data Disclaimer</h3>
+                        <div class="info-disclaimer" id="info-disclaimer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- What's Next Modal -->
+    <div class="modal-overlay" id="whats-next-modal" style="display: none;">
+        <div class="modal-dialog modal-dialog-large">
+            <div class="modal-header">
+                <span class="modal-title">What's Next?</span>
+                <button class="modal-close-btn" id="whats-next-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="roadmap-content">
+                    <div class="roadmap-intro">
+                        <span class="roadmap-badge">BETA</span>
+                        <p>This is the base functionality. More features are coming soon!</p>
+                    </div>
+                    <ul class="roadmap-list" id="roadmap-list"></ul>
+                    <div class="roadmap-cta">
+                        <p>Have a cool idea or feedback? Reach out via my <a href="#" class="roadmap-social-link" id="roadmap-social-link">social links</a>!</p>
+                        <p>Or <a href="#" class="roadmap-social-link" id="roadmap-contribute-link">join the community</a> and help shape the future of Metal Birds Watch.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <img src="assets/icons/logo.png" alt="Logo" class="loading-logo">
+            <div class="loading-text">INITIALIZING RADAR...</div>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+    
+    <!-- Custom JS -->
+    <script src="js/config.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/theme.js" defer></script>
+    <script src="js/map.js" defer></script>
+    <script src="js/notifications.js" defer></script>
+    <script src="js/logbook.js" defer></script>
+    <script src="js/settings.js" defer></script>
+    <script src="js/info.js" defer></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/app.js" defer></script>
+</body>
+</html>

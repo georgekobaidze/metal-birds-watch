@@ -15,8 +15,8 @@ module.exports = {
   MAX_LOCATIONS_PER_IP: 3,       // Max 3 different grid cells per IP
 
   // OpenSky API
-  OPENSKY_BASE_URL: 'https://opensky-network.org/api',
-  OPENSKY_AUTH_URL: 'https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token',
+  OPENSKY_BASE_URL: process.env.OPENSKY_BASE_URL,
+  OPENSKY_AUTH_URL: process.env.OPENSKY_AUTH_URL,
   OPENSKY_CLIENT_ID: process.env.OPENSKY_CLIENT_ID,
   OPENSKY_CLIENT_SECRET: process.env.OPENSKY_CLIENT_SECRET,
 
