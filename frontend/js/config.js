@@ -10,7 +10,7 @@ const CONFIG = {
   // TODO: Replace with your actual Railway URL before production
   API_URL: isLocalhost 
     ? 'http://localhost:3000/api/planes'
-    : 'https://YOUR-RAILWAY-APP.up.railway.app/api/planes',
+    : 'https://metal-birds-watch-production.up.railway.app/api/planes',
   
   // Detection settings
   DETECTION_RADIUS_KM: 12,
