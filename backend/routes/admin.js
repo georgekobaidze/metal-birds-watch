@@ -13,7 +13,7 @@ const adminActionLimiter = rateLimit({
   max: 10,  // Max 10 actions per minute (even with correct key)
   standardHeaders: true,
   legacyHeaders: false,
-  skipFailedRequests: true,  // Only count successful requests
+  skipFailedRequests: true,
   message: {
     error: 'Too many admin actions. Please wait before trying again.'
   }

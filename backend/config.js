@@ -6,7 +6,7 @@ module.exports = {
   CACHE_TTL_SECONDS: 25,  // Reduced for faster notifications (25-30s with jitter)
 
   // Grid Configuration
-  GRID_SIZE_DEGREES: 0.2,        // ~22km per grid cell
+  GRID_SIZE_DEGREES: 0.2,         // ~22km per grid cell
   FETCH_RADIUS_KM: 25,            // How far to fetch from OpenSky API
 
   // Rate Limiting (per IP)

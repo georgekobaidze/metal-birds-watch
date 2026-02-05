@@ -17,9 +17,7 @@ const planesRateLimiter = rateLimit({
 });
 
 /**
- * Rate limiter for admin endpoints
- * Only counts FAILED authentication attempts (wrong API key)
- * Allows unlimited successful requests with correct key
+ * Rate limiter for admin endpoints (failed attemnpts only)
  */
 const adminRateLimiter = rateLimit({
   windowMs: 60000,  // 1 minute
