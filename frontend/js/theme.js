@@ -1,7 +1,3 @@
-/* ============================================
-   THEME MANAGEMENT
-   ============================================ */
-
 let currentTheme = 'dark';
 let manualOverride = false;
 

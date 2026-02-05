@@ -1,8 +1,3 @@
-/* ============================================
-   UTILITY FUNCTIONS
-   ============================================ */
-
-// Debug mode - only enabled in development
 const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
 /**

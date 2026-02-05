@@ -1,7 +1,3 @@
-/* ============================================
-   PLANE LOGBOOK
-   ============================================ */
-
 const Logbook = {
   storageKey: 'plane-logbook',
   maxEntries: 1000,
