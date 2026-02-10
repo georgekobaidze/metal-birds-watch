@@ -331,11 +331,11 @@ Clear all cached data (requires `X-API-KEY` header).
 
 ### Debug Mode
 
-Debug logging is automatically enabled on `localhost`:
+Debug logging is automatically enabled on `localhost` and `127.0.0.1`:
 
 ```javascript
 // frontend/js/utils.js
-const DEBUG_MODE = window.location.hostname === 'localhost';
+const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 ```
 
 ---
