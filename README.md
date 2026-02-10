@@ -110,7 +110,7 @@ metal-birds-watch/
 │   ├── .env.example            # Environment variables template
 │   ├── railway.json            # Railway deployment config
 │   ├── routes/
-│   │   ├── planes.js           # GET /api/planes endpoint
+│   │   ├── planes.js           # POST /api/planes endpoint
 │   │   └── admin.js            # Admin endpoints (cache management)
 │   ├── middleware/
 │   │   ├── rateLimit.js        # Request rate limiting
