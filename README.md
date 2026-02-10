@@ -190,8 +190,9 @@ npm start      # Production
 
 ### 3. Run Frontend
 
-Start a local server:
+⚠️ **Do not open `frontend/index.html` directly via `file://`.** The frontend selects the production API unless `window.location.hostname` is `localhost` or `127.0.0.1`, so opening the file directly (which results in an empty hostname) will send requests to the production backend, which will ultimately throw a CORS error.
 
+Always run the frontend through a local HTTP server during development:
 ```bash
 cd frontend
 npx serve -l 8080 .
