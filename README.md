@@ -189,7 +189,7 @@ Open `frontend/index.html` in your browser, or use a local server:
 cd frontend
 npx serve .
 # or
-python -m http.server 8080 // This one is my personal preferred option
+python -m http.server 8080  # This one is my personal preferred option
 ```
 
 ---
