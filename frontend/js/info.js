@@ -322,26 +322,30 @@ function setupInfoHandlers() {
 function showContributeModal() {
   const { contribute } = INFO_CONFIG;
   
+  // Define available contribute options with their display names and icons
+  const contributeOptions = [
+    { key: 'discord', label: 'Join Discord', icon: 'discord' },
+    { key: 'github', label: 'GitHub Repo', icon: 'github' },
+    { key: 'youtube', label: 'YouTube', icon: 'youtube' },
+    { key: 'devto', label: 'DEV.TO Article', icon: 'devto' }
+  ];
+  
+  // Filter out links that are not available (set to "#" or empty)
+  const availableLinks = contributeOptions
+    .filter(option => contribute[option.key] && contribute[option.key] !== '#')
+    .map(option => `
+      <a href="${contribute[option.key]}" target="_blank" rel="noopener noreferrer" class="contribute-link">
+        ${getSocialIcon(option.icon)}
+        <span>${option.label}</span>
+      </a>
+    `)
+    .join('');
+  
   const content = `
     <div class="contribute-container">
       <p class="contribute-text">Join our community and help make Metal Birds Watch even better!</p>
       <div class="contribute-links">
-        <a href="${contribute.discord}" target="_blank" rel="noopener noreferrer" class="contribute-link">
-          ${getSocialIcon('discord')}
-          <span>Join Discord</span>
-        </a>
-        <a href="${contribute.github}" target="_blank" rel="noopener noreferrer" class="contribute-link">
-          ${getSocialIcon('github')}
-          <span>GitHub Repo</span>
-        </a>
-        <a href="${contribute.youtube}" target="_blank" rel="noopener noreferrer" class="contribute-link">
-          ${getSocialIcon('youtube')}
-          <span>YouTube</span>
-        </a>
-        <a href="${contribute.devto}" target="_blank" rel="noopener noreferrer" class="contribute-link">
-          ${getSocialIcon('devto')}
-          <span>DEV.TO Article</span>
-        </a>
+        ${availableLinks}
       </div>
       <p class="contribute-footer">Or connect with me through my <a href="#" id="contribute-social-link" class="roadmap-social-link">social channels</a></p>
     </div>
