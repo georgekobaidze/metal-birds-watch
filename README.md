@@ -70,7 +70,7 @@ The app uses the [OpenSky Network](https://opensky-network.org/), a public API t
 
 ## 🏗️ Architecture
 
-![Project Diagram](/frontend/assets/images/project_diagram.jpg)
+![Project Diagram](frontend/assets/images/project_diagram.jpg)
 
 ---
 
