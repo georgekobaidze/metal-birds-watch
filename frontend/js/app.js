@@ -1,17 +1,10 @@
-/* ============================================
-   MAIN APPLICATION LOGIC
-   ============================================ */
-
 let isPolling = false;
 let pollTimeout = null;
 let planesData = [];
-let totalDetectedPlanes = new Set(); // Track all planes ever detected (by ICAO24) - persistent
-let fastestSpeed = 0; // Track fastest speed detected (persistent, km/h)
-let closestDistance = null; // Track closest distance ever detected (persistent, km)
+let totalDetectedPlanes = new Set();
+let fastestSpeed = 0;
+let closestDistance = null;
 
-/**
- * Load persistent stats from localStorage
- */
 function loadPersistentStats() {
   try {
     // Load fastest speed

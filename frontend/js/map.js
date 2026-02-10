@@ -1,7 +1,3 @@
-/* ============================================
-   MAP INITIALIZATION & MANAGEMENT
-   ============================================ */
-
 let map = null;
 let tileLayer = null;
 let userMarker = null;

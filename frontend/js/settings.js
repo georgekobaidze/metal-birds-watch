@@ -1,8 +1,3 @@
-/* ============================================
-   SETTINGS MANAGEMENT - Clean Implementation
-   ============================================ */
-
-// Settings object - handles all preferences
 const Settings = {
   storageKey: 'metal-birds-settings',
   

@@ -1,12 +1,8 @@
-/* ============================================
-   NOTIFICATION SYSTEM
-   ============================================ */
-
-let notifiedPlanes = new Set(); // Track ICAO24 codes that have been notified
-let notificationHistory = []; // Persistent notification history
-let notificationPermission = 'default'; // 'default', 'granted', or 'denied'
-let notificationSound = null; // Audio object for notification sound
-let soundUnlocked = false; // Track if audio context is unlocked
+let notifiedPlanes = new Set();
+let notificationHistory = [];
+let notificationPermission = 'default';
+let notificationSound = null;
+let soundUnlocked = false;
 
 /**
  * Initialize notification sound
