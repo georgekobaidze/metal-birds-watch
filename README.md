@@ -183,7 +183,9 @@ npm start      # Production
 
 ### 3. Run Frontend
 
-Open `frontend/index.html` in your browser, or use a local server:
+**Important:** Always use a local web server for development. Opening `index.html` directly via `file://` will cause the frontend to use the production API instead of your local backend.
+
+Start a local server:
 
 ```bash
 cd frontend
@@ -191,6 +193,8 @@ npx serve -l 8080 .
 # or
 python -m http.server 8080  # This one is my personal preferred option
 ```
+
+Then open `http://localhost:8080` in your browser.
 
 ---
 
