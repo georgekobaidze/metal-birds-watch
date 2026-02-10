@@ -330,9 +330,12 @@ function showContributeModal() {
     { key: 'devto', label: 'DEV.TO Article', icon: 'devto' }
   ];
   
-  // Filter out links that are not available (set to "#" or empty)
+  // Filter out links that are not available (set to "#", empty, or whitespace)
   const availableLinks = contributeOptions
-    .filter(option => contribute[option.key] && contribute[option.key] !== '#')
+    .filter(option => {
+      const url = contribute[option.key];
+      return url && url.trim() !== '' && url !== '#';
+    })
     .map(option => `
       <a href="${contribute[option.key]}" target="_blank" rel="noopener noreferrer" class="contribute-link">
         ${getSocialIcon(option.icon)}
