@@ -39,7 +39,7 @@ const INFO_CONFIG = {
     { name: "GitHub", url: "https://github.com/georgekobaidze", icon: "github" },
     { name: "LinkedIn", url: "https://www.linkedin.com/in/giorgikobaidze/", icon: "linkedin" },
     { name: "Twitter/X", url: "https://x.com/georgekobaidze", icon: "twitter" },
-    { name: "Dev.to", url: "https://dev.to/georgekobaidze", icon: "devto" },
+    { name: "DEV.TO", url: "https://dev.to/georgekobaidze", icon: "devto" },
     { name: "Discord", url: "https://discord.gg/D7F6wMf6", icon: "discord" }
   ],
   roadmap: [
