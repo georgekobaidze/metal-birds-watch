@@ -187,7 +187,7 @@ Open `frontend/index.html` in your browser, or use a local server:
 
 ```bash
 cd frontend
-npx serve .
+npx serve -l 8080 .
 # or
 python -m http.server 8080  # This one is my personal preferred option
 ```
