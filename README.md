@@ -9,6 +9,13 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/georgekobaidze/metal-birds-watch/blob/main/LICENSE"><img src="https://img.shields.io/github/license/georgekobaidze/metal-birds-watch" alt="License"></a>
+  <a href="https://github.com/georgekobaidze/metal-birds-watch/stargazers"><img src="https://img.shields.io/github/stars/georgekobaidze/metal-birds-watch" alt="Stars"></a>
+  <a href="https://github.com/georgekobaidze/metal-birds-watch/issues"><img src="https://img.shields.io/github/issues/georgekobaidze/metal-birds-watch" alt="Issues"></a>
+  <a href="https://github.com/georgekobaidze/metal-birds-watch/actions"><img src="https://img.shields.io/github/actions/workflow/status/georgekobaidze/metal-birds-watch/deploy-pages.yml?branch=main" alt="Build Status"></a>
+</p>
+
+<p align="center">
   <a href="https://metalbirdswatch.pilotronica.com">Live Demo</a> •
   <a href="#features">Features</a> •
   <a href="#-quick-start-for-contributors">Quick Start</a> •
@@ -135,7 +142,7 @@ metal-birds-watch/
 
 ### Prerequisites
 - Node.js 18+
-- npm or yarn
+- npm or yarn (The examples here are shown for npm)
 - OpenSky Network account (free) with OAuth2 credentials
 
 ### 1. Clone the Repository
@@ -182,8 +189,6 @@ npm start      # Production
 ```
 
 ### 3. Run Frontend
-
-**Important:** Always use a local web server for development. Opening `index.html` directly via `file://` will cause the frontend to use the production API instead of your local backend.
 
 Start a local server:
 
