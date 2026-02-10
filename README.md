@@ -166,8 +166,8 @@ OPENSKY_AUTH_URL=https://opensky-network.org/api/oauth/token
 OPENSKY_CLIENT_ID=your_client_id
 OPENSKY_CLIENT_SECRET=your_client_secret
 
-# CORS
-CORS_ORIGINS=http://localhost:3000
+# CORS (must include the URL(s) where your frontend is served)
+CORS_ORIGINS=http://localhost:3000,http://localhost:8080
 
 # Admin API (optional)
 ADMIN_API_KEY=your_secure_random_key
