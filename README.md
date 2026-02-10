@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Real-time aircraft tracking with live notifications when planes fly overhead</strong>
+  <strong>Real-time aircraft watching with live notifications when planes fly overhead</strong>
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 ## About
 
-**Metal Birds Watch** is a real-time aircraft tracking web application that notifies you when planes fly overhead. Built for aviation enthusiasts (like me) who want to know what's happening in the sky above them.
+**Metal Birds Watch** is a real-time aircraft watching web application that notifies you when planes fly overhead. Built for aviation enthusiasts (like me) who want to know what's happening in the sky above them.
 
 The app uses the [OpenSky Network](https://opensky-network.org/), a public API to fetch live flight data and displays aircraft on an interactive map with real-time updates, sound notifications, and detailed flight information.
 
@@ -38,18 +38,18 @@ The app uses the [OpenSky Network](https://opensky-network.org/), a public API t
 
 | Feature                     | Description                                                            |
 | --------------------------- | ---------------------------------------------------------------------- |
-| **Live Aircraft Tracking**  | Real-time plane positions on an interactive Leaflet map                |
+| **Live Aircraft Watching**  | Real-time plane positions on an interactive Leaflet map                |
 | **Proximity Notifications** | Sound and browser notifications when planes enter your radius          |
 | **Distance Zones**          | Color-coded zones (close/medium/far) for visual proximity              |
 | **Flight Logbook**          | List all planes you've spotted with export to JSON/CSV                 |
 | **Sky Activity Indicator**  | Shows current air traffic level around your area (idle → very Busy)    |
-| **Persistent Stats**        | Tracks fastest speed, current closest distance, total aircraft spotted |
+| **Persistent Stats**        | Records fastest speed, current closest distance, total aircraft spotted |
 
 ### User Experience
 
 | Feature                       | Description                                                    |
 | ----------------------------- | -------------------------------------------------------------- |
-| **Auto Theme**                | Switches between dark/light based on time of day (6 AM / 6 PM) |
+| **Auto Theme Option**                | Switches between dark/light based on time of day (6 AM / 6 PM) |
 | **Unit Preferences**          | Toggle between metric (km, m) and imperial (mi, ft)            |
 | **Speed Conversion in Knots** | Toggle between mph or km/h and knots based on your preference  |
 | **Sound Controls**            | Enable/disable notification sounds                             |
@@ -70,7 +70,7 @@ The app uses the [OpenSky Network](https://opensky-network.org/), a public API t
 
 ## 🏗️ Architecture
 
-// Drop an image
+![Project Diagram](/frontend/assets/images/project_diagram.jpg)
 
 ---
 
@@ -189,7 +189,7 @@ Open `frontend/index.html` in your browser, or use a local server:
 cd frontend
 npx serve .
 # or
-python -m http.server 8080 // This one's my personal preferred option
+python -m http.server 8080 // This one is my personal preferred option
 ```
 
 ---
@@ -240,9 +240,9 @@ Fetch aircraft near a location.
 {
   "planes": [
     {
-      "icao24": "4ca87a",
-      "callsign": "RYR123",
-      "origin": "Ireland",
+      "icao24": "icao24_value",
+      "callsign": "callsign_value",
+      "origin": "Origin",
       "latitude": 51.512,
       "longitude": -0.089,
       "altitude": 10500,
@@ -361,7 +361,7 @@ Contributions are welcome! Please:
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit changes (`git commit -m 'Add amazing feature'`)
 4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+5. Open a Pull Request targeting the `develop` branch.
 
 ---
 
