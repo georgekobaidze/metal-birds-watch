@@ -65,12 +65,12 @@ function getUserLocation() {
   // TODO: REMOVE THIS BEFORE PRODUCTION!
   // ============================================
   
-  // Hardcoded to Los Angeles, California
-  // Major city with significant airport traffic (LAX)
-  userLocation.lat = 34.0522;
-  userLocation.lon = -118.2437;
+  // Hardcoded to San Francisco, California
+  // Major city with significant airport traffic (SFO)
+  userLocation.lat = 37.7749;
+  userLocation.lon = -122.4194;
   
-  debug('🧪 TESTING MODE: Using hardcoded Los Angeles, CA location', userLocation);
+  debug('🧪 TESTING MODE: Using hardcoded San Francisco, CA location', userLocation);
   
   // Update map
   map.setView([userLocation.lat, userLocation.lon], CONFIG.MAP_ZOOM_DEFAULT);
