@@ -44,6 +44,7 @@ async function getAccessToken() {
     return accessToken;
     
   } catch (error) {
+    console.error('OpenSky auth failed:', error.message);
     throw error;
   }
 }
