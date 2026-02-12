@@ -44,6 +44,12 @@ async function getAccessToken() {
     return accessToken;
     
   } catch (error) {
+    console.error('OpenSky auth fetch failed:', {
+      message: error.message,
+      cause: error.cause,
+      code: error.cause?.code,
+      url: OPENSKY_AUTH_URL
+    });
     throw error;
   }
 }
