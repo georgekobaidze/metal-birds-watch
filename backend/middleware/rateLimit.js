@@ -17,7 +17,7 @@ const planesRateLimiter = rateLimit({
 });
 
 /**
- * Rate limiter for admin endpoints (failed attemnpts only)
+ * Rate limiter for admin endpoints (failed attempts only)
  */
 const adminRateLimiter = rateLimit({
   windowMs: 60000,  // 1 minute
