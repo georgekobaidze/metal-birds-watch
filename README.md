@@ -24,6 +24,13 @@
 
 ---
 
+## Resources
+
+- 🎬 **Video**: [Watch on YouTube](https://www.youtube.com/@Pilotronica)
+- 📝 **Article**: [Metal Birds Watch: Copilot CLI Helped Me Watch Planes Without Looking Up](https://dev.to/georgekobaidze/metal-birds-watch-copilot-cli-helped-me-watch-planes-without-looking-up-fn1)
+
+---
+
 ## About
 
 **Metal Birds Watch** is a real-time aircraft watching web application that notifies you when planes fly overhead. Built for aviation enthusiasts (like me) who want to know what's happening in the sky above them.
