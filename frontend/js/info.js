@@ -63,8 +63,8 @@ const INFO_CONFIG = {
   contribute: {
     discord: "https://discord.gg/D7F6wMf6",
     github: "https://github.com/georgekobaidze/metal-birds-watch",
-    youtube: "#",
-    devto: "#"
+    youtube: "https://www.youtube.com/@Pilotronica",
+    devto: "https://dev.to/georgekobaidze/metal-birds-watch-copilot-cli-helped-me-watch-planes-without-looking-up-fn1"
   }
 };
 
