@@ -150,7 +150,10 @@ function updateText(elementId, text) {
  */
 function showError(message) {
   console.error(message);
-  // Could enhance with toast notification
+  // Show toast notification if available
+  if (typeof window.showToast === 'function') {
+    window.showToast(message, 'error');
+  }
 }
 
 /**
