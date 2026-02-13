@@ -27,7 +27,7 @@
 ## Resources
 
 - 🎬 **Video**: [Watch on YouTube](https://www.youtube.com/@Pilotronica)
-- 📝 **Article**: [Metal Birds Watch: Copilot CLI Helped Me Watch Planes Without Looking Up](https://dev.to/georgekobaidze/metal-birds-watch-copilot-cli-helped-me-watch-planes-without-looking-up-fn1)
+- 📝 **Article**: [Metal Birds Watch: Copilot CLI Helped Me Watch Planes Without Looking Up](https://dev.to/georgekobaidze/metal-birds-watch-copilot-cli-helped-me-watch-planes-without-looking-up-4ha0)
 
 ---
 
