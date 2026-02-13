@@ -311,6 +311,7 @@ window.convertSpeed = convertSpeed;
 window.convertAltitude = convertAltitude;
 window.convertDistance = convertDistance;
 window.showSettings = showSettings;
+window.showToast = showToast;
 
 // Track if document-level click handler has been initialized
 let dropdownClickHandlerInitialized = false;
