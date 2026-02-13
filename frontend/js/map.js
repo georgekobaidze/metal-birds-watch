@@ -60,41 +60,6 @@ function initMap() {
  * Get user's geolocation
  */
 function getUserLocation() {
-  // ============================================
-  // 🧪 TESTING MODE: Hardcoded location
-  // TODO: REMOVE THIS BEFORE PRODUCTION!
-  // ============================================
-  
-  // Hardcoded to San Francisco, California
-  // Major city with significant airport traffic (SFO)
-  userLocation.lat = 37.7749;
-  userLocation.lon = -122.4194;
-  
-  debug('🧪 TESTING MODE: Using hardcoded San Francisco, CA location', userLocation);
-  
-  // Update map
-  map.setView([userLocation.lat, userLocation.lon], CONFIG.MAP_ZOOM_DEFAULT);
-  
-  // Add user marker
-  addUserMarker();
-  
-  // Add detection radius circle
-  addRadiusCircle();
-  
-  // Update location text
-  updateLocationText();
-  
-  // Start fetching plane data
-  if (window.startPolling) {
-    startPolling();
-  }
-  
-  return; // Skip real geolocation for testing
-  
-  // ============================================
-  // 🌍 PRODUCTION CODE (commented out for testing)
-  // ============================================
-  /*
   if (!navigator.geolocation) {
     showError('Geolocation is not supported by your browser');
     return;
@@ -147,7 +112,6 @@ function getUserLocation() {
       }
     }
   );
-  */
 }
 
 /**
