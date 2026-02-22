@@ -405,7 +405,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - LinkedIn: [giorgikobaidze](https://www.linkedin.com/in/giorgikobaidze/)
 - Twitter/X: [@georgekobaidze](https://x.com/georgekobaidze)
 - DEV.TO: [georgekobaidze](https://dev.to/georgekobaidze)
-- Discord: [Join the community](https://discord.gg/D7F6wMf6)
+- Discord: [Join the community](https://discord.gg/sjUuC8McVn)
 
 ---
 

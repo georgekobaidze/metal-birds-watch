@@ -40,7 +40,7 @@ const INFO_CONFIG = {
     { name: "LinkedIn", url: "https://www.linkedin.com/in/giorgikobaidze/", icon: "linkedin" },
     { name: "Twitter/X", url: "https://x.com/georgekobaidze", icon: "twitter" },
     { name: "DEV.TO", url: "https://dev.to/georgekobaidze", icon: "devto" },
-    { name: "Discord", url: "https://discord.gg/D7F6wMf6", icon: "discord" }
+    { name: "Discord", url: "https://discord.gg/sjUuC8McVn", icon: "discord" }
   ],
   roadmap: [
     "Including more information about aircraft (type, photo, etc.)",
@@ -61,7 +61,7 @@ const INFO_CONFIG = {
     "No Tracking: We don't use cookies for tracking, analytics, or advertising. Your browsing activity and usage patterns are not monitored or recorded in any way."
   ],
   contribute: {
-    discord: "https://discord.gg/D7F6wMf6",
+    discord: "https://discord.gg/sjUuC8McVn",
     github: "https://github.com/georgekobaidze/metal-birds-watch",
     youtube: "https://www.youtube.com/@Pilotronica",
     devto: "https://dev.to/georgekobaidze/metal-birds-watch-copilot-cli-helped-me-watch-planes-without-looking-up-4ha0"
