@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cache = require('../services/cache');
 const opensky = require('../services/opensky');
+const registryFeed = require('../services/registryFeed');
 const { validateCoordinates } = require('../middleware/validate');
 const { planesRateLimiter } = require('../middleware/rateLimit');
 const { FETCH_RADIUS_KM, CACHE_TTL_SECONDS } = require('../config');
@@ -57,7 +58,11 @@ router.post('/planes', planesRateLimiter, validateCoordinates, async (req, res) 
     
     try {
       const planes = await fetchPromise;
-      
+
+      // Enrich with registry details (aircraft type + attribution) before caching, so the lookup is
+      // shared across the grid's TTL rather than repeated per request. Best-effort — never throws.
+      await registryFeed.enrichPlanes(planes);
+
       // Store in cache
       cache.set(gridKey, planes);
       

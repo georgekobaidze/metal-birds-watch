@@ -20,6 +20,11 @@ module.exports = {
   OPENSKY_CLIENT_ID: process.env.OPENSKY_CLIENT_ID,
   OPENSKY_CLIENT_SECRET: process.env.OPENSKY_CLIENT_SECRET,
 
+  // Metal Birds Feed — registry enrichment (aircraft type + attribution). Optional: when unset,
+  // planes are served without registry details and no attribution is shown.
+  REGISTRY_FEED_BASE_URL: process.env.REGISTRY_FEED_BASE_URL,
+  REGISTRY_FEED_TOKEN: process.env.REGISTRY_FEED_TOKEN,
+
   // Earth Constants (for calculations)
   EARTH_RADIUS_KM: 6371,
   KM_PER_DEGREE_LAT: 111,        // Constant everywhere

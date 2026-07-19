@@ -310,6 +310,11 @@ function createPlanePopupContent(plane) {
     }
   }
   
+  const registry = plane.registry || {};
+  const attribution = registry.attribution
+    ? `<div class="plane-popup-attribution">${escapeHtml(registry.attribution)}</div>`
+    : '';
+
   return `
     <div class="plane-popup">
       <div class="plane-popup-header">
@@ -340,9 +345,32 @@ function createPlanePopupContent(plane) {
           <span class="popup-label">🔖 ICAO24:</span>
           <span class="popup-value">${icao24}</span>
         </div>
-      </div>
+        ${optionalRow('🛩️ Type:', registry.type)}
+        ${optionalRow('🏷️ Registration:', registry.registration)}
+        ${optionalRow('⚙️ Engine:', registry.engine)}
+        ${optionalRow('👤 Owner:', registry.owner_name)}
+        ${optionalRow('📅 Year:', registry.year_manufactured)}
+      </div>${attribution}
     </div>
   `;
+}
+
+/**
+ * Render a popup row when the value is present, otherwise nothing — so optional registry fields
+ * appear only when the feed supplied them.
+ * @param {string} label - Row label (may contain an emoji)
+ * @param {string|number} [value] - Row value; a falsy value renders no row
+ * @returns {string} HTML for one popup row, or an empty string
+ */
+function optionalRow(label, value) {
+  if (!value) {
+    return '';
+  }
+  return `
+        <div class="popup-row">
+          <span class="popup-label">${label}</span>
+          <span class="popup-value">${escapeHtml(String(value))}</span>
+        </div>`;
 }
 
 /**

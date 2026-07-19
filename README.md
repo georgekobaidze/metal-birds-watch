@@ -183,6 +183,11 @@ OPENSKY_CLIENT_SECRET=your_client_secret
 # CORS (must include the URL(s) where your frontend is served)
 CORS_ORIGINS=http://localhost:3000,http://localhost:8080
 
+# Metal Birds Feed — registry enrichment (aircraft type, engine, owner, attribution). Optional:
+# leave unset to serve planes without registry details.
+REGISTRY_FEED_BASE_URL=https://metalbirdsfeed.anchildress1.dev
+REGISTRY_FEED_TOKEN=your_feed_bearer_token
+
 # Admin API (optional)
 ADMIN_API_KEY=your_secure_random_key
 ```
@@ -266,13 +271,22 @@ Fetch aircraft near a location.
       "velocity": 420,
       "heading": 90,
       "on_ground": false,
-      "distance": 5.2
+      "distance": 5.2,
+      "registry": {
+        "type": "CESSNA 152",
+        "engine": "LYCOMING O-235 SERIES",
+        "owner_name": "SLIPSTREAM AVIATION LLC",
+        "registration": "N818T",
+        "attribution": "Source: Federal Aviation Administration (FAA), United States — ..."
+      }
     }
   ],
   "cacheAge": 12,
   "nextUpdateIn": 18
 }
 ```
+
+`registry` is present only when the [Metal Birds Feed](https://github.com/anchildress1/metal-birds-feed) has a match and `REGISTRY_FEED_*` is configured; its fields arrive display-ready and are rendered verbatim, `attribution` included.
 
 **Rate Limit:** 5 requests per 30 seconds per IP
 
@@ -391,6 +405,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - [OpenSky Network](https://opensky-network.org/) for the flight data API
+- [Metal Birds Feed](https://github.com/anchildress1/metal-birds-feed) for aircraft registry enrichment (type, engine, owner) with per-source attribution
 - [Leaflet](https://leafletjs.com/) for the interactive maps
 - [OpenStreetMap](https://www.openstreetmap.org/) for map tiles
 - Built for the [DEV.TO Copilot Challenge](https://dev.to/devteam/join-the-github-copilot-cli-challenge-win-github-universe-tickets-copilot-pro-subscriptions-and-50af)

@@ -159,6 +159,16 @@
   text-align: right;
 }
 
+/* Upstream source credit — shown verbatim only alongside the registry data it attributes */
+.plane-popup-attribution {
+  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-md);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  color: var(--text-secondary);
+  opacity: 0.8;
+  overflow-wrap: break-word;
+}
+
 /* Close button */
 .leaflet-popup-close-button {
   color: var(--text-primary) !important;
