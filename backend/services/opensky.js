@@ -1,3 +1,4 @@
+const { Agent } = require('undici');
 const { OPENSKY_BASE_URL, OPENSKY_AUTH_URL, OPENSKY_CLIENT_ID, OPENSKY_CLIENT_SECRET } = require('../config');
 const { getBoundingBox } = require('./grid');
 
@@ -6,6 +7,14 @@ let accessToken = null;
 let tokenExpiry = null;
 let tokenRefreshPromise = null; // Promise-based lock for token refresh
 const TOKEN_REFRESH_BUFFER = 5 * 60 * 1000; // Refresh 5 minutes before expiry
+
+// OpenSky's auth server (194.209.200.34:443) can take longer than undici's
+// default 10s connect timeout to complete the TCP handshake from Railway's
+// network path, even though the connection does eventually succeed. Use a
+// dedicated Agent with an extended connect timeout for the auth request.
+const authDispatcher = new Agent({
+  connect: { timeout: 30000 }
+});
 
 /**
  * Get access token from OpenSky OAuth2 server
@@ -31,6 +40,7 @@ async function getAccessToken() {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: params,
+      dispatcher: authDispatcher, // extended connect timeout for slow TCP handshake
       signal: AbortSignal.timeout(30000) // 30 second timeout
     });
 
