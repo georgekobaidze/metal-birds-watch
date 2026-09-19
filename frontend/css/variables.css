@@ -51,7 +51,7 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
   
   /* Map tile URL */
-  --map-tiles: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
+  --map-tiles: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png?key=cb1_3qpf_2_4b20e898d3030fc0c2dd7234';
   
   /* Theme-specific */
   --theme-icon: '🌙';
@@ -83,7 +83,7 @@
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
   
   /* Map tile URL */
-  --map-tiles: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
+  --map-tiles: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_3qpf_2_4b20e898d3030fc0c2dd7234';
   
   /* Theme-specific */
   --theme-icon: '☀️';
