@@ -236,6 +236,20 @@ Then open `http://localhost:8080` in your browser.
 | `THEME_SWITCH_HOUR_NIGHT` | 18      | Hour to switch to dark theme  |
 | `THEME_SWITCH_HOUR_DAY`   | 6       | Hour to switch to light theme |
 
+> **Map tiles** are the one frontend setting that does not live in `config.js`.
+> The tile URL is defined per theme by the `--map-tiles` CSS custom property in
+> `frontend/css/variables.css`, read at map initialization and again on every
+> theme switch. Tiles are served by [CARTO](https://carto.com/basemaps/), which
+> requires a free API key appended as `?key=<KEY>`. Keys are requested at
+> [carto.com/basemaps/apikey](https://carto.com/basemaps/apikey/) and allow
+> 5M tile requests per month. CARTO and OpenStreetMap attribution must remain
+> visible on the map.
+>
+> The committed key is **domain-restricted to the production host**, so tiles
+> return `403` when served from `localhost`. To work on the map locally,
+> temporarily swap in your own unrestricted development key and revert before
+> committing, so an unrestricted key never reaches the repository.
+
 ---
 
 ## API Reference
@@ -392,7 +406,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [OpenSky Network](https://opensky-network.org/) for the flight data API
 - [Leaflet](https://leafletjs.com/) for the interactive maps
-- [OpenStreetMap](https://www.openstreetmap.org/) for map tiles
+- [CARTO](https://carto.com/basemaps/) for the basemap tiles
+- [OpenStreetMap](https://www.openstreetmap.org/) for the underlying map data
 - Built for the [DEV.TO Copilot Challenge](https://dev.to/devteam/join-the-github-copilot-cli-challenge-win-github-universe-tickets-copilot-pro-subscriptions-and-50af)
 
 ---
