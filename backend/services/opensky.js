@@ -22,8 +22,10 @@ async function getAccessToken() {
     client_secret: OPENSKY_CLIENT_SECRET
   });
 
+  let response;
+
   try {
-    const response = await fetch(OPENSKY_AUTH_URL, {
+    response = await fetch(OPENSKY_AUTH_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -32,6 +34,14 @@ async function getAccessToken() {
     });
 
     if (!response.ok) {
+      const responseText = await response.text().catch(() => '<unable to read response body>');
+      console.error('OpenSky auth HTTP error:', {
+        url: OPENSKY_AUTH_URL,
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: responseText
+      });
       throw new Error(`OAuth token request failed: ${response.status} ${response.statusText}`);
     }
 
@@ -44,7 +54,38 @@ async function getAccessToken() {
     return accessToken;
     
   } catch (error) {
+    // Log as much detail as possible to distinguish DNS, TCP, TLS, timeout,
+    // or other network-level failures from HTTP-level failures.
     console.error('OpenSky auth failed:', error.message);
+    console.error('OpenSky auth error details:', {
+      url: OPENSKY_AUTH_URL,
+      name: error.name,
+      code: error.code,
+      errno: error.errno,
+      syscall: error.syscall,
+      address: error.address,
+      port: error.port,
+      cause: error.cause ? {
+        name: error.cause.name,
+        message: error.cause.message,
+        code: error.cause.code,
+        errno: error.cause.errno,
+        syscall: error.cause.syscall,
+        address: error.cause.address,
+        port: error.cause.port
+      } : undefined,
+      stack: error.stack
+    });
+
+    if (response) {
+      console.error('OpenSky auth response info (partial success):', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+    }
+
     throw error;
   }
 }
