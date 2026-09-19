@@ -30,7 +30,8 @@ async function getAccessToken() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: params
+      body: params,
+      signal: AbortSignal.timeout(30000) // 30 second timeout
     });
 
     if (!response.ok) {
