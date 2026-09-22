@@ -385,6 +385,12 @@ window.highlightPlaneOnMap = highlightPlaneOnMap;
 
 // Initialize map when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+  // The maintenance page replaces the map - skip it and the location prompt
+  if (CONFIG.MAINTENANCE.ACTIVE) {
+    debug('Map skipped - maintenance mode active');
+    return;
+  }
+
   initMap();
   getUserLocation();
 });

@@ -113,6 +113,34 @@
     right: 10px;
     left: 10px;
   }
+
+  /* Maintenance page: smaller photo, notice spans the width */
+  .maintenance-page {
+    background-image: url('../assets/images/hangar-maintenance-small.jpg');
+    background-position: 92% center; /* Keep the cockpit in view on narrow screens */
+    padding: var(--spacing-md);
+  }
+
+  .maintenance-content {
+    max-width: none;
+    padding: var(--spacing-md);
+  }
+
+  .maintenance-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .maintenance-callout,
+  .maintenance-text,
+  .maintenance-promise {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .maintenance-meta {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-md);
+  }
 }
 
 /* Extra small screens: < 550px - Compact legend */
