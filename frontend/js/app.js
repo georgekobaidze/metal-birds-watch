@@ -263,6 +263,13 @@ function updateStatsDisplay() {
  * Start smart polling
  */
 function startPolling() {
+  // Skip polling during maintenance - the backend can't reach the data provider,
+  // so every request would time out and show an error toast
+  if (CONFIG.MAINTENANCE.ACTIVE) {
+    debug('Polling skipped - maintenance mode active');
+    return;
+  }
+
   if (!userLocation.lat || !userLocation.lon) {
     debug('Cannot start polling - user location not available');
     return;
@@ -334,6 +341,11 @@ document.addEventListener('DOMContentLoaded', () => {
   debug('Metal Birds Watch initialized');
   debug('Backend API:', CONFIG.API_URL);
   
+  // Show maintenance status instead of ONLINE/OFFLINE
+  if (CONFIG.MAINTENANCE.ACTIVE) {
+    setMaintenanceStatus();
+  }
+
   // Load persistent stats
   loadPersistentStats();
   // Update stats UI with any loaded persistent values
