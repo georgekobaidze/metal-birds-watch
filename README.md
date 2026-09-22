@@ -246,9 +246,17 @@ Then open `http://localhost:8080` in your browser.
 > visible on the map.
 >
 > The committed key is **domain-restricted to the production host**, so tiles
-> return `403` when served from `localhost`. To work on the map locally,
-> temporarily swap in your own unrestricted development key and revert before
-> committing, so an unrestricted key never reaches the repository.
+> return `403` when served from `localhost`. On `localhost` the key is removed
+> automatically, so tiles load with the CARTO watermark. To load them without
+> the watermark, store your own unrestricted development key in the browser
+> once, from the devtools console:
+>
+> ```js
+> localStorage.setItem('carto-dev-key', 'YOUR_DEV_KEY')
+> ```
+>
+> The key stays in your browser and never touches the repository. Remove it
+> with `localStorage.removeItem('carto-dev-key')`.
 
 ---
 

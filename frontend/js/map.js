@@ -27,12 +27,7 @@ function initMap() {
     });
     
     // Add tile layer from CSS variable
-    const tileUrl = getComputedStyle(document.documentElement)
-      .getPropertyValue('--map-tiles')
-      .trim()
-      .replace(/['"]/g, '');
-    
-    tileLayer = L.tileLayer(tileUrl, {
+    tileLayer = L.tileLayer(getTileUrl(), {
       attribution: '© OpenStreetMap contributors © CARTO',
       maxZoom: 19
     }).addTo(map);

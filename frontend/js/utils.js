@@ -177,6 +177,35 @@ function debug(message, data = null) {
 }
 
 /**
+ * Get map tile URL for the current theme
+ * The committed CARTO key is domain-restricted to production, so on localhost
+ * it's swapped for a dev key from localStorage ('carto-dev-key'), or removed
+ * (tiles then load with the CARTO watermark)
+ * @returns {string} Tile URL template
+ */
+function getTileUrl() {
+  const url = getComputedStyle(document.documentElement)
+    .getPropertyValue('--map-tiles')
+    .trim()
+    .replace(/['"]/g, '');
+
+  if (!isLocalhost) {
+    return url;
+  }
+
+  let devKey = null;
+  try {
+    devKey = localStorage.getItem('carto-dev-key');
+  } catch (e) {
+    debug('Error reading CARTO dev key:', e);
+  }
+
+  return devKey
+    ? url.replace(/key=[^&]+/, `key=${encodeURIComponent(devKey)}`)
+    : url.replace(/[?&]key=[^&]+/, '');
+}
+
+/**
  * Show custom confirmation modal
  * @param {string} title - Modal title
  * @param {string} message - Modal message
