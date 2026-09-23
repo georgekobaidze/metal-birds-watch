@@ -113,6 +113,45 @@
     right: 10px;
     left: 10px;
   }
+
+  /* Maintenance page: smaller photo, notice spans the width */
+  .maintenance-page {
+    background-image: url('../assets/images/hangar-maintenance-small.jpg');
+    background-position: 92% center; /* Keep the cockpit in view on narrow screens */
+    padding: var(--spacing-md);
+  }
+
+  .maintenance-content {
+    max-width: none;
+    padding: var(--spacing-md);
+  }
+
+  .maintenance-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .maintenance-callout,
+  .maintenance-text,
+  .maintenance-promise {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .maintenance-meta {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  /* Tower panel becomes a bottom sheet */
+  .tower-panel {
+    top: auto;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: 70vh;
+    animation: slide-in-bottom 0.3s ease;
+  }
 }
 
 /* Extra small screens: < 550px - Compact legend */
@@ -324,5 +363,35 @@
   
   .stat-value {
     font-size: var(--font-size-2xl);
+  }
+}
+
+/* Touch screens: larger tap targets on the maintenance page */
+@media (pointer: coarse) {
+  .tower-chip {
+    min-height: 40px;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .tower-close {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* Short screens (phones in landscape): give the Tower conversation more room */
+@media (max-height: 500px) {
+  .tower-panel {
+    top: 68px;
+    max-height: calc(100vh - 76px);
+  }
+
+  .tower-header {
+    padding: var(--spacing-xs) var(--spacing-md);
+  }
+
+  .tower-log,
+  .tower-chips {
+    padding: var(--spacing-sm) var(--spacing-md);
   }
 }

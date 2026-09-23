@@ -218,3 +218,33 @@
     stroke-dashoffset: -10;
   }
 }
+
+/* Tower "typing..." dots */
+@keyframes tower-typing {
+  0%, 60%, 100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* Maintenance page: respect reduced motion (the Tower also skips its typing pause) */
+@media (prefers-reduced-motion: reduce) {
+  .maintenance-page,
+  .tower-panel {
+    animation: none;
+  }
+
+  .maintenance-tower-btn,
+  .tower-chip,
+  .tower-close {
+    transition: none;
+  }
+
+  .maintenance-tower-btn:hover {
+    transform: none;
+  }
+}

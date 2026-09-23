@@ -27,12 +27,7 @@ function initMap() {
     });
     
     // Add tile layer from CSS variable
-    const tileUrl = getComputedStyle(document.documentElement)
-      .getPropertyValue('--map-tiles')
-      .trim()
-      .replace(/['"]/g, '');
-    
-    tileLayer = L.tileLayer(tileUrl, {
+    tileLayer = L.tileLayer(getTileUrl(), {
       attribution: '© OpenStreetMap contributors © CARTO',
       maxZoom: 19
     }).addTo(map);
@@ -390,6 +385,12 @@ window.highlightPlaneOnMap = highlightPlaneOnMap;
 
 // Initialize map when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+  // The maintenance page replaces the map - skip it and the location prompt
+  if (CONFIG.MAINTENANCE.ACTIVE) {
+    debug('Map skipped - maintenance mode active');
+    return;
+  }
+
   initMap();
   getUserLocation();
 });
