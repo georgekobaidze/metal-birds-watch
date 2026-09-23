@@ -14,11 +14,15 @@
   --color-medium: #ffd60a;    /* Yellow: 3-7km */
   --color-far: #7cfc00;       /* Green: 7-12km */
   --color-outside: #718096;   /* Gray: Outside 12km circle */
-  
+
+  /* Status colors */
+  --color-warning: #ffb020;   /* Amber: maintenance / known outage */
+
   /* Glow effects */
   --cyan-glow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.4);
   --green-glow: 0 0 20px rgba(124, 252, 0, 0.8), 0 0 40px rgba(124, 252, 0, 0.4);
   --red-glow: 0 0 20px rgba(255, 0, 110, 0.8), 0 0 40px rgba(255, 0, 110, 0.4);
+  --amber-glow: 0 0 20px rgba(255, 176, 32, 0.8), 0 0 40px rgba(255, 176, 32, 0.4);
   
   /* Transitions */
   --transition-speed: 0.3s;

@@ -68,13 +68,7 @@ function applyTheme(theme) {
 function updateMapTiles(theme) {
   if (!window.map || !window.tileLayer) return;
   
-  // Get tile URL from CSS variable
-  const tileUrl = getComputedStyle(document.documentElement)
-    .getPropertyValue('--map-tiles')
-    .trim()
-    .replace(/['"]/g, '');
-  
-  window.tileLayer.setUrl(tileUrl);
+  window.tileLayer.setUrl(getTileUrl());
 }
 
 /**

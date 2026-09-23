@@ -1596,3 +1596,297 @@
 
 
 
+/* ============================================
+   MAINTENANCE PAGE
+   ============================================ */
+
+/* Maintenance page replaces the map and its panels */
+body.maintenance-mode .map-container,
+body.maintenance-mode .stats-panel,
+body.maintenance-mode .bottom-bar {
+  display: none;
+}
+
+.maintenance-page {
+  position: fixed;
+  top: 60px; /* Below the header */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary) url('../assets/images/hangar-maintenance.jpg') 70% center / cover no-repeat;
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  z-index: var(--z-map);
+  animation: fade-in 0.5s ease;
+}
+
+.maintenance-content {
+  max-width: 760px; /* Fits the title on one line */
+  background: var(--bg-glass-heavy);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(255, 176, 32, 0.15);
+  padding: var(--spacing-xl);
+}
+
+.maintenance-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.maintenance-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.maintenance-tag {
+  font-family: var(--font-tech);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--bg-primary);
+  background: var(--color-warning);
+  border-radius: var(--radius-sm);
+  padding: 2px var(--spacing-sm);
+}
+
+.maintenance-tag-outline {
+  color: var(--color-warning);
+  background: transparent;
+  border: 1px solid var(--color-warning);
+  text-transform: uppercase;
+}
+
+.maintenance-title {
+  font-family: var(--font-tech);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--color-warning);
+  margin: 0;
+}
+
+/* Radio-call style notice */
+.maintenance-callout {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-warning);
+  border-left: 3px solid var(--color-warning);
+  padding-left: var(--spacing-md);
+  margin: 0 0 var(--spacing-lg);
+}
+
+.maintenance-text {
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md);
+}
+
+.maintenance-promise {
+  font-size: var(--font-size-lg);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--neon-cyan);
+  margin: 0 0 var(--spacing-md);
+}
+
+.maintenance-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--spacing-md);
+  row-gap: var(--spacing-xs);
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.maintenance-counter {
+  color: var(--text-secondary);
+}
+
+.maintenance-link {
+  font-weight: 600;
+}
+
+.maintenance-tower-btn {
+  width: 100%;
+  padding: var(--spacing-md);
+  background: rgba(255, 176, 32, 0.1);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  color: var(--color-warning);
+  font-family: var(--font-tech);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.maintenance-tower-btn:hover {
+  background: rgba(255, 176, 32, 0.2);
+  box-shadow: 0 0 15px rgba(255, 176, 32, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   TOWER Q&A PANEL
+   ============================================ */
+
+.tower-panel {
+  position: fixed;
+  top: 84px;
+  right: var(--spacing-lg);
+  width: 400px;
+  max-height: calc(100vh - 108px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-glass-heavy);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(255, 176, 32, 0.15);
+  z-index: var(--z-stats-panel);
+  animation: slide-in-right 0.3s ease;
+}
+
+.tower-panel[hidden] {
+  display: none;
+}
+
+.tower-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid rgba(255, 176, 32, 0.3);
+}
+
+.tower-icon {
+  font-size: var(--font-size-xl);
+}
+
+.tower-title {
+  flex: 1;
+  font-family: var(--font-tech);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-warning);
+  margin: 0;
+}
+
+.tower-close {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-size-2xl);
+  line-height: 1;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.tower-close:hover {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.tower-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+}
+
+.tower-msg {
+  max-width: 85%;
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin: 0;
+}
+
+/* Tower messages on the left, user questions on the right */
+.tower-msg-tower {
+  align-self: flex-start;
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.tower-msg-user {
+  align-self: flex-end;
+  color: var(--bg-primary);
+  background: var(--color-warning);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.tower-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+  border-top: 1px solid rgba(255, 176, 32, 0.3);
+}
+
+.tower-chip {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: rgba(255, 176, 32, 0.1);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-full);
+  color: var(--color-warning);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.tower-chip:hover {
+  background: rgba(255, 176, 32, 0.2);
+}
+
+.tower-link {
+  font-weight: 600;
+}
+
+/* "Typing..." indicator before each Tower answer */
+.tower-typing {
+  display: flex;
+  gap: 4px;
+  padding: var(--spacing-md);
+}
+
+.tower-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--text-secondary);
+  animation: tower-typing 1s infinite ease-in-out;
+}
+
+.tower-typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.tower-typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}

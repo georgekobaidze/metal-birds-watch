@@ -25,5 +25,13 @@ const CONFIG = {
   // Map settings
   MAP_ZOOM_DEFAULT: 11,
   MAP_ZOOM_MIN: 8,
-  MAP_ZOOM_MAX: 16
+  MAP_ZOOM_MAX: 16,
+
+  // Maintenance mode (upstream data outage)
+  MAINTENANCE: {
+    ACTIVE: true,                  // Set to false once the new data provider is live
+    ID: 'opensky-2026-09',         // Change for a new notice so old dismissals don't hide it
+    SINCE: '2026-09-20',           // Outage start date (YYYY-MM-DD), used for the day counter
+    ISSUE_URL: 'https://github.com/georgekobaidze/metal-birds-watch/issues/98'
+  }
 };

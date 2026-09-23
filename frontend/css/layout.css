@@ -245,6 +245,11 @@ body {
   box-shadow: var(--red-glow);
 }
 
+.status-dot.maintenance {
+  background: var(--color-warning);
+  box-shadow: var(--amber-glow);
+}
+
 .status-text {
   font-family: var(--font-tech);
   font-size: var(--font-size-xs);

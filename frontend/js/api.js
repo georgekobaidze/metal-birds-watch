@@ -75,3 +75,17 @@ function updateConnectionStatus(isOnline) {
     }
   }
 }
+
+/**
+ * Show maintenance status indicator (known upstream data outage)
+ */
+function setMaintenanceStatus() {
+  const statusDot = document.querySelector('.status-dot');
+  const statusText = document.querySelector('.status-text');
+
+  if (statusDot && statusText) {
+    statusDot.classList.remove('online', 'offline');
+    statusDot.classList.add('maintenance');
+    statusText.textContent = 'NO FEED';
+  }
+}
